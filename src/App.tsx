@@ -18,7 +18,6 @@ const FakeAddress = lazy(() => import('@/pages/FakeAddress'));
 const CardChecker = lazy(() => import('@/pages/CardChecker'));
 const BinChecker = lazy(() => import('@/pages/BinChecker'));
 const VIPPlan = lazy(() => import('@/pages/VIP'));
-const BinExtractor = lazy(() => import('@/pages/BinExtractor'));
 const Terms = lazy(() => import('@/pages/Terms'));
 const Privacy = lazy(() => import('@/pages/Privacy'));
 const IpCheck = lazy(() => import('@/pages/IpCheck'));
@@ -47,7 +46,6 @@ export default function App() {
               <Route path="card-checker" element={<CardChecker />} />
               <Route path="bin-checker" element={<BinChecker />} />
               <Route path="ip" element={<IpCheck />} />
-              <Route path="bin-extractor" element={<BinExtractor />} />
               <Route path="terms" element={<Terms />} />
               <Route path="privacy" element={<Privacy />} />
               
