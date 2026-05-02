@@ -257,8 +257,7 @@ export default function BinChecker() {
                 fontFamily: "'JetBrains Mono', monospace",
                 background: 'var(--surface-hover)',
                 border: '1px solid var(--border-default)',
-                color: 'var(--text-primary)',
-                ringColor: 'var(--primary-ring)'
+                color: 'var(--text-primary)'
               }}
             />
             <div className="flex gap-2 mt-4">
