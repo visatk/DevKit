@@ -24,16 +24,16 @@ function InputField({ label, type, placeholder, value, onChange, icon: Icon, aut
 
   return (
     <div>
-      <label className="badge-mono block mb-2" style={{ color: 'var(--text-muted)' }}>{label}</label>
+      <label className="badge-mono block mb-2.5 text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-tertiary)' }}>{label}</label>
       <div
-        className="relative flex items-center rounded-xl transition-all"
+        className="relative flex items-center rounded-lg transition-all duration-200"
         style={{
-          background: 'var(--surface-raised)',
-          border: `1px solid ${focused ? 'var(--orange)' : 'var(--border-strong)'}`,
-          boxShadow: focused ? '0 0 0 3px var(--orange-dim)' : 'none',
+          background: 'var(--surface-hover)',
+          border: `1px solid ${focused ? 'var(--primary-base)' : 'var(--border-default)'}`,
+          boxShadow: focused ? '0 0 0 3px var(--primary-ring)' : 'none',
         }}
       >
-        <Icon className="absolute left-3.5 size-4 shrink-0 transition-colors" style={{ color: focused ? 'var(--orange)' : 'var(--text-muted)' }} />
+        <Icon className="absolute left-3 w-4 h-4 shrink-0 transition-colors duration-200" style={{ color: focused ? 'var(--primary-base)' : 'var(--text-tertiary)' }} />
         <input
           required
           type={isPassword && showPw ? 'text' : type}
@@ -43,16 +43,22 @@ function InputField({ label, type, placeholder, value, onChange, icon: Icon, aut
           autoComplete={autoComplete}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="flex-1 bg-transparent py-3.5 pl-11 pr-10 text-sm font-medium outline-none"
+          className="flex-1 bg-transparent py-3 pl-10 pr-3 text-sm font-medium outline-none"
           style={{ color: 'var(--text-primary)' }}
         />
         {isPassword && (
-          <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3.5 p-1 rounded" style={{ color: 'var(--text-muted)' }}>
-            {showPw ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          <button
+            type="button"
+            onClick={() => setShowPw(!showPw)}
+            className="absolute right-3 p-1 rounded transition-colors duration-200 hover:text-primary-base"
+            style={{ color: 'var(--text-tertiary)' }}
+            aria-label={showPw ? 'Hide password' : 'Show password'}
+          >
+            {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
         )}
       </div>
-      {hint && <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>{hint}</p>}
+      {hint && <p className="text-xs mt-2" style={{ color: 'var(--text-tertiary)' }}>{hint}</p>}
     </div>
   );
 }
@@ -103,87 +109,140 @@ export default function Register() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-[90vh] p-4 relative">
+    <main className="flex items-center justify-center min-h-screen p-4 relative">
       <SeoHead title="Create Account | DevKit" description="Create a DevKit account to access all features." />
 
-      {/* Ambient glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] pointer-events-none -z-10 opacity-50"
-        style={{ background: 'radial-gradient(ellipse, rgba(243,128,32,0.1) 0%, transparent 70%)', filter: 'blur(40px)' }}
+      {/* Ambient gradient backgrounds */}
+      <div className="absolute top-1/4 -left-32 w-80 h-80 rounded-full pointer-events-none -z-10 opacity-40 hidden lg:block"
+        style={{ background: 'radial-gradient(circle, var(--primary-ring) 0%, transparent 70%)', filter: 'blur(80px)' }}
+      />
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full pointer-events-none -z-10 opacity-30 hidden lg:block"
+        style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)', filter: 'blur(100px)' }}
       />
 
-      <div
-        className="w-full max-w-[440px] rounded-2xl overflow-hidden animation-fade-up"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 24px 80px rgba(0,0,0,0.12)' }}
+      <div className="w-full max-w-md rounded-xl overflow-hidden animate-fade-up"
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border-default)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)'
+        }}
       >
-        <div className="h-px w-full bg-gradient-to-r from-orange-500 via-amber-400 to-transparent" />
+        {/* Top gradient accent */}
+        <div className="h-px w-full bg-gradient-to-r from-primary-base via-primary-light to-transparent" />
 
-        <div className="p-7 sm:p-9">
+        <div className="p-8 sm:p-10">
+          {/* Header Section */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center mb-5">
-              <div className="size-14 rounded-2xl flex items-center justify-center" style={{ background: 'var(--orange-dim)', border: '1px solid var(--orange-border)' }}>
-                <Logo className="size-8 text-orange-500" />
+            <div className="inline-flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'var(--primary-tint)', border: '1px solid var(--primary-ring)' }}>
+                <Logo className="w-6 h-6" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight mb-1.5" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
-              Create your account
+            <h1 className="text-2xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+              Create Account
             </h1>
-            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Join the community today</p>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Join the DevKit community</p>
           </div>
 
-          <a href="/api/auth/github" className="w-full mb-5 flex items-center justify-center gap-3 py-3.5 rounded-xl text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98]" style={{ background: '#24292e', color: '#fff' }}>
-            <GitHubIcon className="size-4.5" /> Continue with GitHub
-          </a>
+          {/* GitHub OAuth Button */}
+          <button
+            onClick={() => window.location.href = '/api/auth/github'}
+            className="w-full flex items-center justify-center gap-3 py-3 rounded-lg text-sm font-semibold transition-all duration-200 border hover:bg-surface-hover active:scale-95"
+            style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-default)', color: 'var(--text-primary)' }}
+          >
+            <GitHubIcon className="w-4 h-4" />
+            Continue with GitHub
+          </button>
 
-          <div className="relative mb-5">
-            <div className="absolute inset-0 flex items-center"><div className="w-full" style={{ borderTop: '1px solid var(--border)' }} /></div>
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border-default" />
+            </div>
             <div className="relative flex justify-center">
-              <span className="px-3 badge-mono" style={{ background: 'var(--surface)', color: 'var(--text-muted)' }}>or register with email</span>
+              <span className="px-3 text-xs font-semibold uppercase tracking-widest" style={{ background: 'var(--surface)', color: 'var(--text-tertiary)' }}>
+                Or with Email
+              </span>
             </div>
           </div>
 
+          {/* Error Message */}
           {error && (
-            <div className="mb-5 flex items-start gap-3 p-3.5 rounded-xl animation-fade-in" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-              <AlertCircle className="size-4 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-sm font-medium text-red-500 leading-snug">{error}</p>
+            <div className="mb-5 flex items-start gap-3 p-3 rounded-lg animate-fade-in"
+              style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
+            >
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--error-base)' }} />
+              <p className="text-sm font-medium" style={{ color: 'var(--error-base)' }}>{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <InputField 
-              label="Username" type="text" placeholder="your_username" value={username} 
-              onChange={setUsername} icon={User} autoComplete="username" 
-              hint="Letters, numbers, underscores only" 
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <InputField
+              label="Username"
+              type="text"
+              placeholder="your_username"
+              value={username}
+              onChange={setUsername}
+              icon={User}
+              autoComplete="username"
+              hint="Letters, numbers, underscores only"
             />
-            <InputField 
-              label="Email Address" type="email" placeholder="you@example.com" 
-              value={email} onChange={setEmail} icon={Mail} autoComplete="email" 
+            <InputField
+              label="Email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={setEmail}
+              icon={Mail}
+              autoComplete="email"
             />
-            <InputField 
-              label="Password" type="password" placeholder="••••••••" 
-              value={password} onChange={setPassword} icon={Lock} autoComplete="new-password" 
-              hint="Min 8 chars (Requires 1 uppercase, 1 lowercase, 1 number)" 
+            <InputField
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={setPassword}
+              icon={Lock}
+              autoComplete="new-password"
+              hint="Min 8 chars (1 uppercase, 1 lowercase, 1 number)"
             />
 
-            <div className="flex justify-center py-2 rounded-xl min-h-[68px]" style={{ background: 'var(--surface-raised)', border: '1px solid var(--border)' }}>
-              <Turnstile key={turnstileKey} siteKey={siteKey} onSuccess={setTurnstileToken} onError={() => setTurnstileToken('')} onExpire={() => setTurnstileToken('')} options={{ theme: 'auto', size: 'flexible' }} />
+            {/* Turnstile */}
+            <div className="flex justify-center py-3 rounded-lg" style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-default)' }}>
+              <Turnstile
+                key={turnstileKey}
+                siteKey={siteKey}
+                onSuccess={setTurnstileToken}
+                onError={() => setTurnstileToken('')}
+                onExpire={() => setTurnstileToken('')}
+                options={{ theme: 'auto', size: 'flexible' }}
+              />
             </div>
 
+            {/* Submit Button */}
             <button
               disabled={isLoading || !turnstileToken}
-              className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-bold transition-all disabled:opacity-50 active:scale-[0.98]"
-              style={{ background: 'var(--text-primary)', color: 'var(--bg)' }}
-              onMouseEnter={e => { if (!isLoading) e.currentTarget.style.background = 'var(--orange)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'var(--text-primary)'; }}
+              className="btn-primary w-full flex items-center justify-center gap-2 py-3 rounded-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
+              style={{
+                background: isLoading ? 'var(--primary-dark)' : 'linear-gradient(135deg, var(--primary-base) 0%, var(--primary-light) 100%)',
+                color: 'white',
+                boxShadow: isLoading ? 'none' : '0 4px 12px rgba(243, 128, 32, 0.25)'
+              }}
             >
-              {isLoading ? <><Loader2 className="size-4 animate-spin" /> Creating account...</> : <><UserPlus className="size-4" /> Create Account</>}
+              {isLoading ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</>
+              ) : (
+                <><UserPlus className="w-4 h-4" /> Create Account</>
+              )}
             </button>
           </form>
 
-          <p className="text-center text-sm mt-6 pt-5" style={{ borderTop: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+          {/* Footer Link */}
+          <p className="text-center text-sm mt-6 pt-6 border-t border-border-default" style={{ color: 'var(--text-secondary)' }}>
             Already have an account?{' '}
-            <Link to="/login" className="font-bold hover:text-orange-500 transition-colors inline-flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
-              Sign in <ArrowRight className="size-3" />
+            <Link to="/login" className="font-semibold hover:text-primary-base transition-colors duration-200 inline-flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
+              Sign in <ArrowRight className="w-3 h-3" />
             </Link>
           </p>
         </div>
