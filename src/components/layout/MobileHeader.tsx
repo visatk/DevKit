@@ -88,115 +88,111 @@ export function MobileHeader() {
 
   return (
     <>
-      {/* ── Sticky Top Bar ── */}
-      <header
-        className="sticky top-0 z-40 flex h-14 pt-safe items-center gap-3 px-4 sm:px-5 md:hidden"
-        style={{ background: 'var(--surface-glass)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', borderBottom: '1px solid var(--border)' }}
+      {/* Mobile Header - Sticky Top Bar */}
+      <header className="sticky top-0 z-40 flex h-16 pt-safe items-center justify-between gap-3 px-4 sm:px-6 md:hidden border-b border-border-default"
+        style={{
+          background: 'var(--surface)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        }}
       >
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center justify-center size-9 rounded-xl transition-colors active:scale-95 focus-ring"
-          style={{ background: 'var(--surface-raised)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
+          className="flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 active:scale-95 focus-ring hover:bg-surface-hover"
+          style={{ color: 'var(--text-secondary)', background: 'transparent', border: '1px solid var(--border-default)' }}
           aria-label="Open menu"
         >
-          <Menu className="size-4.5" />
+          <Menu className="w-5 h-5" />
         </button>
 
         <NavLink to="/" className="flex items-center gap-2 group">
-          <Logo className="size-6 text-orange-500" />
-          <span
-            className="text-base font-bold tracking-tight transition-colors group-hover:text-orange-500"
-            style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}
-          >
-            Visatk
+          <Logo className="h-6 w-auto" />
+          <span className="text-base font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+            DevKit
           </span>
         </NavLink>
 
-        {/* Right side user info */}
+        {/* User Info on Mobile */}
         <div className="ml-auto flex items-center gap-2">
           {!isLoading && user && (
             <>
               {user.isVip && (
-                <div
-                  className="flex size-7 items-center justify-center rounded-full"
-                  style={{ background: 'rgba(243,128,32,0.1)', border: '1px solid rgba(243,128,32,0.3)' }}
-                >
-                  <Crown className="size-3.5 text-amber-400" />
+                <div className="flex w-8 h-8 items-center justify-center rounded-full" style={{ background: 'var(--primary-tint)', border: '1px solid var(--primary-ring)' }}>
+                  <Crown className="w-4 h-4" style={{ color: 'var(--primary-base)' }} />
                 </div>
               )}
-              <div
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full badge-mono text-orange-500"
-                style={{ background: 'rgba(243,128,32,0.1)', border: '1px solid rgba(243,128,32,0.2)' }}
-              >
-                <Flame className="size-3" /> {user.points}
+              <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg badge-mono" style={{ background: 'var(--primary-tint)', border: '1px solid var(--primary-ring)', color: 'var(--primary-base)' }}>
+                <Flame className="w-3 h-3" /> {user.points}
               </div>
             </>
           )}
         </div>
       </header>
 
-      {/* ── Backdrop ── */}
+      {/* Backdrop Overlay */}
       <div
-        className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-        style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+        className={`fixed inset-0 z-40 md:hidden transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        style={{ background: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(4px)' }}
         onClick={() => setIsOpen(false)}
         aria-hidden="true"
       />
 
-      {/* ── Side Drawer ── */}
+      {/* Mobile Navigation Drawer */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-[82%] max-w-[320px] h-dvh flex flex-col md:hidden transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
-        style={{ background: 'var(--surface)', borderRight: '1px solid var(--border)' }}
+        className={`fixed inset-y-0 left-0 z-50 w-[80%] max-w-xs h-screen flex flex-col md:hidden transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        style={{
+          background: 'var(--surface)',
+          borderRight: '1px solid var(--border-default)',
+          backdropFilter: 'blur(12px)'
+        }}
       >
-        {/* Top accent */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/80 via-amber-400/50 to-transparent" />
+        {/* Top gradient accent */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-primary-base via-primary-light to-transparent opacity-60" />
 
         {/* Drawer Header */}
-        <div
-          className="flex h-14 pt-safe items-center justify-between px-4 shrink-0"
-          style={{ borderBottom: '1px solid var(--border)', background: 'var(--surface-raised)' }}
-        >
+        <div className="flex h-16 pt-safe items-center justify-between px-6 shrink-0 border-b border-border-default">
           <NavLink to="/" className="flex items-center gap-2">
-            <Logo className="size-6 text-orange-500" />
-            <span className="text-base font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>Visatk</span>
+            <Logo className="h-6 w-auto" />
+            <span className="text-base font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>DevKit</span>
           </NavLink>
           <button
             onClick={() => setIsOpen(false)}
-            className="flex size-8 items-center justify-center rounded-lg transition-colors active:scale-95"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
+            className="flex w-10 h-10 items-center justify-center rounded-lg transition-all duration-200 active:scale-95 hover:bg-surface-hover focus-ring"
+            style={{ background: 'transparent', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
             aria-label="Close menu"
           >
-            <X className="size-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Drawer Nav Content */}
-        <div className="flex-1 overflow-y-auto py-5 px-3 custom-scrollbar pl-safe space-y-5">
+        {/* Drawer Content */}
+        <div className="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar pl-safe space-y-6">
           <NavSection items={utilities} label="Utilities" />
           <NavSection items={community} label="Community" />
 
-          {/* VIP Banner */}
+          {/* Premium Upgrade Banner */}
           {user && !user.isVip && (
-            <div
-              className="relative overflow-hidden rounded-xl p-4 group mt-2"
-              style={{ background: 'linear-gradient(135deg, #1A1028 0%, #0F0A1E 100%)', border: '1px solid rgba(245,158,11,0.2)' }}
+            <div className="relative overflow-hidden rounded-xl p-4 group mt-6"
+              style={{
+                background: 'linear-gradient(135deg, var(--primary-base) 0%, var(--primary-light) 100%)',
+                border: '1px solid var(--primary-ring)'
+              }}
             >
-              <div className="absolute -top-6 -right-6 size-24 bg-amber-500/20 rounded-full blur-2xl" />
+              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full blur-3xl" style={{ background: 'rgba(255,255,255,0.1)' }} />
               <div className="relative z-10">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <Crown className="size-4 text-amber-400" />
-                  <span className="text-sm font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Unlock Elite</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <Crown className="w-4 h-4 text-white" />
+                  <span className="text-sm font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Unlock Premium</span>
                 </div>
-                <p className="text-xs mb-3 leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  Lifetime access to locked content &amp; priority status.
+                <p className="text-xs mb-3 leading-relaxed text-white/80">
+                  Access exclusive features and priority support
                 </p>
                 <Link
                   to="/vip"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-lg text-xs font-bold text-white transition-all"
-                  style={{ background: 'linear-gradient(135deg, #F59E0B, #F38020)' }}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-xs font-bold text-white bg-white/20 hover:bg-white/30 transition-colors duration-200"
                 >
-                  <Zap className="size-3.5" /> Upgrade to VIP
+                  <Zap className="w-3.5 h-3.5" /> Upgrade Now
                 </Link>
               </div>
             </div>
@@ -204,64 +200,57 @@ export function MobileHeader() {
         </div>
 
         {/* Drawer Footer */}
-        <div
-          className="shrink-0 p-3 pb-safe"
-          style={{ borderTop: '1px solid var(--border)', background: 'var(--surface-raised)' }}
-        >
+        <div className="shrink-0 p-4 pb-safe border-t border-border-default">
           {isLoading ? (
-            <div className="h-12 rounded-xl skeleton" />
+            <div className="h-12 rounded-lg skeleton" />
           ) : user ? (
-            <div
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5"
-              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-            >
+            <div className="flex items-center gap-3 rounded-lg px-3 py-2.5" style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-default)' }}>
               <Link
                 to={`/profile/${user.username}`}
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity"
               >
                 <div className="relative shrink-0">
-                  <div
-                    className="size-9 rounded-full flex items-center justify-center overflow-hidden"
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden"
                     style={{
-                      background: user.isVip ? 'rgba(243,128,32,0.12)' : 'var(--surface-raised)',
-                      border: `2px solid ${user.isVip ? 'rgba(243,128,32,0.4)' : 'var(--border-strong)'}`,
+                      background: user.isVip ? 'var(--primary-tint)' : 'var(--surface-active)',
+                      border: `2px solid ${user.isVip ? 'var(--primary-ring)' : 'var(--border-default)'}`,
                     }}
                   >
                     {user.avatarUrl
                       ? <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-                      : <User className="size-4" style={{ color: 'var(--text-secondary)' }} />
+                      : <User className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                     }
                   </div>
                   {user.isVip && (
-                    <div className="absolute -top-1 -right-1 rounded-full p-0.5" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                      <Crown className="size-2.5 text-amber-400" />
+                    <div className="absolute -top-1 -right-1 rounded-full p-0.5 bg-surface border border-primary-base">
+                      <Crown className="w-2.5 h-2.5" style={{ color: 'var(--primary-base)' }} />
                     </div>
                   )}
                 </div>
                 <div className="flex flex-col truncate">
-                  <span className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>{user.username}</span>
-                  <span className="flex items-center gap-1 text-xs font-semibold text-orange-500">
-                    <Flame className="size-3" /> {user.points} pts
+                  <span className="text-sm font-bold truncate text-text-primary">{user.username}</span>
+                  <span className="flex items-center gap-1 text-xs font-semibold text-primary-base">
+                    <Flame className="w-3 h-3" /> {user.points} pts
                   </span>
                 </div>
               </Link>
               <button
                 onClick={handleLogout}
-                className="shrink-0 p-2 rounded-lg transition-colors hover:bg-red-500/10 hover:text-red-500 active:scale-95"
+                className="shrink-0 p-2 rounded-lg transition-all duration-200 hover:bg-error-base/10 hover:text-error-base active:scale-95"
                 style={{ color: 'var(--text-muted)' }}
+                aria-label="Logout"
               >
-                <LogOut className="size-4" />
+                <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <NavLink
               to="/login"
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold transition-all active:scale-[0.98]"
-              style={{ background: 'var(--text-primary)', color: 'var(--bg)' }}
+              className="btn-primary flex items-center justify-center gap-2 w-full py-3 text-sm rounded-lg transition-all active:scale-95"
             >
-              <LogIn className="size-4" /> Sign In
+              <LogIn className="w-4 h-4" /> Sign In
             </NavLink>
           )}
         </div>
