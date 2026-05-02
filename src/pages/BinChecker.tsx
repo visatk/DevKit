@@ -252,12 +252,13 @@ export default function BinChecker() {
               placeholder={"424242\n555555\n378282\n371449\n4111111111111111"}
               value={input}
               onChange={e => setInput(e.target.value)}
-              className="w-full rounded-lg p-4 text-sm outline-none resize-none custom-scrollbar transition-all duration-200 focus:ring-2 focus:ring-[var(--primary-ring)]"
+              className="w-full rounded-lg p-4 text-sm outline-none resize-none custom-scrollbar transition-all duration-200 focus:ring-2"
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 background: 'var(--surface-hover)',
                 border: '1px solid var(--border-default)',
-                color: 'var(--text-primary)'
+                color: 'var(--text-primary)',
+                ringColor: 'var(--primary-ring)'
               }}
             />
             <div className="flex gap-2 mt-4">

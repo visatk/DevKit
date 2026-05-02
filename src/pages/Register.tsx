@@ -21,20 +21,29 @@ function InputField({ label, type, placeholder, value, onChange, icon: Icon, aut
   const [showPw, setShowPw] = useState(false);
   const [focused, setFocused] = useState(false);
   const isPassword = type === 'password';
+  const fieldId = `field-${label.toLowerCase().replace(/\s+/g, '-')}`;
+  const hintId = hint ? `hint-${fieldId}` : undefined;
 
   return (
-    <div>
-      <label className="badge-mono block mb-2.5 text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-tertiary)' }}>{label}</label>
+    <div className="form-group">
+      <label htmlFor={fieldId} className="form-label">
+        {label}
+      </label>
       <div
         className="relative flex items-center rounded-lg transition-all duration-200"
         style={{
           background: 'var(--surface-hover)',
-          border: `1px solid ${focused ? 'var(--primary-base)' : 'var(--border-default)'}`,
+          border: `1.5px solid ${focused ? 'var(--primary-base)' : 'var(--border-default)'}`,
           boxShadow: focused ? '0 0 0 3px var(--primary-ring)' : 'none',
         }}
       >
-        <Icon className="absolute left-3 w-4 h-4 shrink-0 transition-colors duration-200" style={{ color: focused ? 'var(--primary-base)' : 'var(--text-tertiary)' }} />
+        <Icon 
+          className="absolute left-3.5 w-4 h-4 shrink-0 transition-colors duration-200 pointer-events-none" 
+          style={{ color: focused ? 'var(--primary-base)' : 'var(--text-tertiary)' }} 
+          aria-hidden="true"
+        />
         <input
+          id={fieldId}
           required
           type={isPassword && showPw ? 'text' : type}
           placeholder={placeholder}
@@ -43,22 +52,25 @@ function InputField({ label, type, placeholder, value, onChange, icon: Icon, aut
           autoComplete={autoComplete}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="flex-1 bg-transparent py-3 pl-10 pr-3 text-sm font-medium outline-none"
+          className="flex-1 bg-transparent py-3 pl-10 pr-12 text-sm font-medium outline-none"
           style={{ color: 'var(--text-primary)' }}
+          aria-required="true"
+          aria-describedby={hintId}
         />
         {isPassword && (
           <button
             type="button"
             onClick={() => setShowPw(!showPw)}
-            className="absolute right-3 p-1 rounded transition-colors duration-200 hover:text-primary-base"
-            style={{ color: 'var(--text-tertiary)' }}
+            className="absolute right-3 p-2 rounded transition-colors duration-200 hover:text-primary-base focus:outline-offset-2 focus:outline-2 focus:outline-primary-base"
+            style={{ color: 'var(--text-tertiary)', minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             aria-label={showPw ? 'Hide password' : 'Show password'}
+            aria-pressed={showPw}
           >
-            {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showPw ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
           </button>
         )}
       </div>
-      {hint && <p className="text-xs mt-2" style={{ color: 'var(--text-tertiary)' }}>{hint}</p>}
+      {hint && <p id={hintId} className="form-hint">{hint}</p>}
     </div>
   );
 }
@@ -109,75 +121,86 @@ export default function Register() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen p-4 relative">
-      <SeoHead title="Create Account | DevKit" description="Create a DevKit account to access all features." />
+    <main className="flex items-center justify-center min-h-screen p-4 relative" role="main" aria-label="Create account page">
+      <SeoHead 
+        title="Create Account | DevKit" 
+        description="Create a DevKit account to access professional development tools and join the community. Sign up securely with email or GitHub." 
+      />
 
-      {/* Ambient gradient backgrounds */}
-      <div className="absolute top-1/4 -left-32 w-80 h-80 rounded-full pointer-events-none -z-10 opacity-40 hidden lg:block"
+      {/* Decorative gradient backgrounds - non-interactive */}
+      <div className="absolute top-1/4 -left-32 w-80 h-80 rounded-full pointer-events-none -z-10 opacity-40 hidden lg:block" aria-hidden="true"
         style={{ background: 'radial-gradient(circle, var(--primary-ring) 0%, transparent 70%)', filter: 'blur(80px)' }}
       />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full pointer-events-none -z-10 opacity-30 hidden lg:block"
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full pointer-events-none -z-10 opacity-30 hidden lg:block" aria-hidden="true"
         style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)', filter: 'blur(100px)' }}
       />
 
-      <div className="w-full max-w-md rounded-xl overflow-hidden animate-fade-up"
+      <section className="w-full max-w-md rounded-xl overflow-hidden animate-fade-up card-elevated"
         style={{
           background: 'var(--surface)',
           border: '1px solid var(--border-default)',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)'
         }}
       >
-        {/* Top gradient accent */}
-        <div className="h-px w-full bg-gradient-to-r from-primary-base via-primary-light to-transparent" />
+        {/* Top accent border */}
+        <div className="h-1 w-full bg-gradient-to-r from-primary-base via-primary-light to-transparent" aria-hidden="true" />
 
         <div className="p-8 sm:p-10">
-          {/* Header Section */}
-          <div className="text-center mb-8">
+          {/* Page Header */}
+          <header className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-4">
               <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'var(--primary-tint)', border: '1px solid var(--primary-ring)' }}>
-                <Logo className="w-6 h-6" />
+                <Logo className="w-6 h-6" aria-hidden="true" />
               </div>
             </div>
             <h1 className="text-2xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
               Create Account
             </h1>
-            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Join the DevKit community</p>
-          </div>
+            <p className="text-sm text-text-secondary">Join the DevKit community and start building today</p>
+          </header>
 
-          {/* GitHub OAuth Button */}
+          {/* GitHub OAuth Button - Social signup option */}
           <button
             onClick={() => window.location.href = '/api/auth/github'}
-            className="w-full flex items-center justify-center gap-3 py-3 rounded-lg text-sm font-semibold transition-all duration-200 border hover:bg-surface-hover active:scale-95"
-            style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-default)', color: 'var(--text-primary)' }}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-all duration-200 border hover:border-primary-base hover:bg-primary-tint active:scale-95 focus:outline-offset-2 focus:outline-2 focus:outline-primary-base"
+            style={{ background: 'var(--surface-hover)', border: '1.5px solid var(--border-default)', color: 'var(--text-primary)' }}
+            aria-label="Sign up with GitHub account"
           >
-            <GitHubIcon className="w-4 h-4" />
-            Continue with GitHub
+            <GitHubIcon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+            <span>Continue with GitHub</span>
           </button>
 
-          {/* Divider */}
-          <div className="relative my-6">
+          {/* Divider - Alternate signup method */}
+          <div className="relative my-6" aria-hidden="true">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border-default" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-3 text-xs font-semibold uppercase tracking-widest" style={{ background: 'var(--surface)', color: 'var(--text-tertiary)' }}>
-                Or with Email
+              <span className="px-3 text-xs font-semibold uppercase tracking-wider" style={{ background: 'var(--surface)', color: 'var(--text-tertiary)' }}>
+                Or continue with email
               </span>
             </div>
           </div>
 
-          {/* Error Message */}
+          {/* Error Alert - Accessibility-friendly notification */}
           {error && (
-            <div className="mb-5 flex items-start gap-3 p-3 rounded-lg animate-fade-in"
-              style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
+            <div 
+              className="mb-5 flex items-start gap-3 p-4 rounded-lg animate-fade-in" 
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+              style={{ background: 'rgba(239, 68, 68, 0.08)', border: '1.5px solid rgba(239, 68, 68, 0.3)' }}
             >
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--error-base)' }} />
-              <p className="text-sm font-medium" style={{ color: 'var(--error-base)' }}>{error}</p>
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 flex-shrink-0" style={{ color: 'var(--error-base)' }} aria-hidden="true" />
+              <div>
+                <p className="text-sm font-semibold" style={{ color: 'var(--error-base)' }}>Registration failed</p>
+                <p className="text-sm mt-1" style={{ color: 'var(--error-base)' }}>{error}</p>
+              </div>
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Registration Form */}
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+            {/* Username Input */}
             <InputField
               label="Username"
               type="text"
@@ -186,10 +209,12 @@ export default function Register() {
               onChange={setUsername}
               icon={User}
               autoComplete="username"
-              hint="Letters, numbers, underscores only"
+              hint="3-20 characters: letters, numbers, underscores"
             />
+            
+            {/* Email Input */}
             <InputField
-              label="Email"
+              label="Email Address"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -197,6 +222,8 @@ export default function Register() {
               icon={Mail}
               autoComplete="email"
             />
+            
+            {/* Password Input */}
             <InputField
               label="Password"
               type="password"
@@ -205,11 +232,12 @@ export default function Register() {
               onChange={setPassword}
               icon={Lock}
               autoComplete="new-password"
-              hint="Min 8 chars (1 uppercase, 1 lowercase, 1 number)"
+              hint="Minimum 8 characters (uppercase, lowercase, number required)"
             />
 
-            {/* Turnstile */}
-            <div className="flex justify-center py-3 rounded-lg" style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-default)' }}>
+            {/* Security Verification - Turnstile */}
+            <fieldset className="flex justify-center py-4 rounded-lg" style={{ background: 'var(--surface-hover)', border: '1.5px solid var(--border-default)' }}>
+              <legend className="sr-only">Security verification</legend>
               <Turnstile
                 key={turnstileKey}
                 siteKey={siteKey}
@@ -218,33 +246,40 @@ export default function Register() {
                 onExpire={() => setTurnstileToken('')}
                 options={{ theme: 'auto', size: 'flexible' }}
               />
-            </div>
+            </fieldset>
 
-            {/* Submit Button */}
+            {/* Submit Button - Primary action */}
             <button
+              type="submit"
               disabled={isLoading || !turnstileToken}
-              className="btn-primary w-full flex items-center justify-center gap-2 py-3 rounded-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
+              className="btn-lg w-full flex items-center justify-center gap-2 rounded-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
               style={{
                 background: isLoading ? 'var(--primary-dark)' : 'linear-gradient(135deg, var(--primary-base) 0%, var(--primary-light) 100%)',
                 color: 'white',
-                boxShadow: isLoading ? 'none' : '0 4px 12px rgba(243, 128, 32, 0.25)'
+                boxShadow: isLoading ? 'none' : '0 4px 12px rgba(243, 128, 32, 0.25)',
+                minHeight: '44px'
               }}
+              aria-busy={isLoading}
             >
               {isLoading ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</>
+                <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> <span>Creating account</span></>
               ) : (
-                <><UserPlus className="w-4 h-4" /> Create Account</>
+                <><UserPlus className="w-4 h-4" aria-hidden="true" /> <span>Create Account</span></>
               )}
             </button>
           </form>
 
-          {/* Footer Link */}
-          <p className="text-center text-sm mt-6 pt-6 border-t border-border-default" style={{ color: 'var(--text-secondary)' }}>
-            Already have an account?{' '}
-            <Link to="/login" className="font-semibold hover:text-primary-base transition-colors duration-200 inline-flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
-              Sign in <ArrowRight className="w-3 h-3" />
+          {/* Sign In Link */}
+          <div className="text-center text-sm mt-8 pt-8 border-t border-border-default" style={{ color: 'var(--text-secondary)' }}>
+            <span>Already have an account? </span>
+            <Link 
+              to="/login" 
+              className="font-semibold hover:text-primary-base hover:underline transition-colors duration-200 inline-flex items-center gap-1 focus:outline-offset-2 focus:outline-2 focus:outline-primary-base" 
+              style={{ color: 'var(--primary-base)' }}
+            >
+              Sign in <ArrowRight className="w-3 h-3 mt-0.5" aria-hidden="true" />
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </main>
