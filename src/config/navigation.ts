@@ -1,7 +1,6 @@
 import { 
   ShieldCheck, 
   CreditCard,
-  SearchIcon,
   Terminal, 
   MapPin, 
   MessageSquare, 
