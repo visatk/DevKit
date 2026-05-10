@@ -1,143 +1,116 @@
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Search,
-  CreditCard,
-  Scissors,
-  Globe,
-  MapPin,
-  MessageSquare,
-  ShieldCheck,
-  ExternalLink,
+import { 
+  Terminal, Home, MessagesSquare, Users, Settings, 
+  CreditCard, ShieldCheck, Cpu, Database, ChevronLeft
 } from 'lucide-react';
 import { Logo } from '../Logo';
 
-type NavChild = { name: string; href: string; icon: React.ElementType };
-type NavGroup = { name: string; children: NavChild[] };
-type NavItem = { name: string; href: string; icon: React.ElementType };
-
-const navigation: (NavItem | NavGroup)[] = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  {
-    name: 'Card Tools',
-    children: [
-      { name: 'Bin Checker',   href: '/bin-checker',   icon: Search      },
-      { name: 'Bin Extractor', href: '/bin-extractor', icon: Scissors    },
-      { name: 'Card Checker',  href: '/card-checker',  icon: ShieldCheck },
-      { name: 'Test Cards',    href: '/test-cards',    icon: CreditCard  },
-    ],
-  },
-  {
-    name: 'Network & Info',
-    children: [
-      { name: 'IP Check',      href: '/ip',      icon: Globe  },
-      { name: 'Fake Address',  href: '/fake-address',  icon: MapPin },
-    ],
-  },
-  { name: 'Community', href: '/', icon: MessageSquare },
-];
-
-function isGroup(item: NavItem | NavGroup): item is NavGroup {
-  return 'children' in item;
+interface SidebarProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-export const Sidebar = () => {
+const navGroups = [
+  {
+    title: 'Platform',
+    links: [
+      { name: 'Dashboard', path: '/', icon: Home },
+      { name: 'Community Forum', path: '/forum', icon: MessagesSquare },
+      { name: 'VIP Access', path: '/vip', icon: ShieldCheck },
+    ]
+  },
+  {
+    title: 'Developer Tools',
+    links: [
+      { name: 'Card Checker', path: '/card-checker', icon: CreditCard },
+      { name: 'BIN Extractor', path: '/bin-checker', icon: Database },
+      { name: 'IP Analysis', path: '/ip-check', icon: Cpu },
+      { name: 'Identity Generator', path: '/fake-address', icon: Users },
+    ]
+  }
+];
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
 
   return (
-    <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col md:flex border-r border-border-default"
-      style={{
-        background: 'var(--surface)',
-        borderRight: '1px solid var(--border-default)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)'
-      }}
+    <aside 
+      className={`
+        fixed lg:static inset-y-0 left-0 z-40 
+        w-72 glass-panel flex flex-col
+        transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}
     >
-      {/* Branding Header - Professional hierarchy */}
-      <header className="flex h-16 shrink-0 items-center px-6 border-b border-border-default" role="banner">
-        <a href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity" aria-label="DevKit home">
-          <Logo className="h-6 w-auto" aria-hidden="true" />
-          <span className="text-lg font-bold tracking-tight" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>DevKit</span>
-        </a>
-      </header>
-
-      {/* Primary Navigation - Organized sections */}
-      <nav className="flex-1 overflow-y-auto px-4 py-8 space-y-10 custom-scrollbar" aria-label="Navigation menu">
-        {navigation.map((item) =>
-          isGroup(item) ? (
-            <section key={item.name} aria-labelledby={`nav-section-${item.name}`}>
-              <h2 
-                id={`nav-section-${item.name}`}
-                className="mb-3.5 px-2 text-xs font-bold uppercase tracking-wider text-text-tertiary"
-              >
-                {item.name}
-              </h2>
-              <ul className="space-y-2" role="list">
-                {item.children.map((child) => (
-                  <li key={child.href}>
-                    <SidebarLink item={child} active={location.pathname === child.href} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : (
-            <ul key={(item as NavItem).href} className="space-y-2" role="list">
-              <li>
-                <SidebarLink item={item as NavItem} active={location.pathname === (item as NavItem).href} />
-              </li>
-            </ul>
-          )
-        )}
-      </nav>
-
-      {/* Sidebar Footer - Community CTA */}
-      <footer className="shrink-0 border-t border-border-default p-4 space-y-3">
-        <a
-          href="https://github.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-200 hover:bg-surface-hover hover:text-primary-base focus:outline-2 focus:outline-offset-2 focus:outline-primary-base"
-          style={{ color: 'var(--text-secondary)', background: 'transparent' }}
-          aria-label="Join our GitHub community (opens in new window)"
+      {/* Sidebar Header */}
+      <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-800/50">
+        <Logo className="h-8" />
+        <button 
+          onClick={() => setIsOpen(false)}
+          className="lg:hidden p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors"
         >
-          <MessageSquare className="h-4 w-4 shrink-0" />
-          <span className="flex-1">Join Community</span>
-          <ExternalLink className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-        </a>
-      </footer>
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Navigation Links */}
+      <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8 scrollbar-hide">
+        {navGroups.map((group, idx) => (
+          <div key={idx}>
+            <h3 className="px-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              {group.title}
+            </h3>
+            <div className="space-y-1">
+              {group.links.map((link) => {
+                const Icon = link.icon;
+                const isActive = location.pathname === link.path;
+                
+                return (
+                  <NavLink
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`
+                      group flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+                      ${isActive 
+                        ? 'bg-indigo-500/10 text-indigo-400' 
+                        : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100'
+                      }
+                    `}
+                  >
+                    <div className="flex items-center gap-3 relative">
+                      {/* Active Indicator Line */}
+                      {isActive && (
+                        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1 h-6 bg-indigo-500 rounded-r-full" />
+                      )}
+                      <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-indigo-400' : 'text-zinc-500 group-hover:text-zinc-300'}`} />
+                      {link.name}
+                    </div>
+                  </NavLink>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* User Section / Bottom Actions */}
+      <div className="p-4 border-t border-zinc-800/50">
+        <NavLink
+          to="/profile"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800/50 transition-colors"
+        >
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-inner border border-white/10">
+            A
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-zinc-100 truncate">Admin User</p>
+            <p className="text-xs text-zinc-500 truncate">Pro Member</p>
+          </div>
+          <Settings className="w-4 h-4 text-zinc-500 hover:text-zinc-300" />
+        </NavLink>
+      </div>
     </aside>
   );
 };
-
-const SidebarLink = ({ item, active }: { item: NavChild | NavItem; active: boolean }) => (
-  <NavLink
-    to={item.href}
-    className="group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium outline-none transition-all duration-200"
-    style={{
-      color: active ? 'var(--primary-base)' : 'var(--text-secondary)',
-      background: active ? 'var(--primary-tint)' : 'transparent',
-      border: `1.5px solid ${active ? 'var(--primary-ring)' : 'transparent'}`,
-    }}
-    aria-current={active ? 'page' : undefined}
-  >
-    {/* Visual active indicator - left bar */}
-    {active && (
-      <span
-        className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full transition-all duration-200"
-        style={{
-          background: 'var(--primary-base)',
-          boxShadow: '0 0 8px var(--primary-ring)'
-        }}
-        aria-hidden="true"
-      />
-    )}
-
-    {/* Icon with semantic size for touch targets (min 44px height) */}
-    <span className="flex h-5 w-5 items-center justify-center flex-shrink-0">
-      <item.icon className="h-4 w-4 transition-colors duration-200" aria-hidden="true" />
-    </span>
-    
-    {/* Label text */}
-    <span className="flex-1 text-left">{item.name}</span>
-  </NavLink>
-);
