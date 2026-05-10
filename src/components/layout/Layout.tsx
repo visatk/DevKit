@@ -1,58 +1,54 @@
-import { Outlet } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { MobileHeader } from './MobileHeader';
 import { Footer } from './Footer';
 
-export function Layout() {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
-    <div className="relative min-h-screen w-full transition-colors duration-300"
-      style={{
-        background: 'var(--background)',
-        color: 'var(--text-primary)',
-        fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif"
-      }}
-    >
-      {/* Decorative background gradients - GPU accelerated, non-intrusive */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-        {/* Top-left accent - subtle primary tint */}
-        <div className="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none z-0 will-change-transform transform-gpu hidden lg:block"
-          style={{
-            background: 'radial-gradient(circle, var(--primary-tint) 0%, transparent 70%)',
-            filter: 'blur(80px)',
-            opacity: 0.4
-          }}
-        />
-        {/* Bottom-right accent - subtle secondary blue */}
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none z-0 will-change-transform transform-gpu hidden lg:block"
-          style={{
-            background: 'radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%)',
-            filter: 'blur(100px)',
-            opacity: 0.3
-          }}
-        />
+    <div className="min-h-screen flex bg-zinc-950 text-zinc-50 overflow-hidden selection:bg-indigo-500/30">
+      {/* Background ambient light effects - much more subtle than floating blobs */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px]" />
       </div>
 
-      {/* Desktop Navigation Sidebar */}
-      <Sidebar />
+      {/* Desktop Sidebar */}
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        setIsOpen={setIsSidebarOpen} 
+      />
 
-      {/* Main Content Container */}
-      <div className="flex min-h-screen flex-col md:ml-64 lg:ml-72 relative z-10 min-w-0">
-        
-        {/* Mobile Navigation Header */}
-        <MobileHeader />
+      <div className="flex-1 flex flex-col relative z-10 min-w-0">
+        {/* Mobile Header */}
+        <MobileHeader 
+          isOpen={isSidebarOpen} 
+          setIsOpen={setIsSidebarOpen} 
+        />
 
-        {/* Page Content - Semantic main element */}
-        <main 
-          className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 pb-safe min-w-0 animate-fade-in"
-          role="main"
-          aria-label="Main content"
-        >
-          <Outlet />
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth">
+          <div className="h-full flex flex-col">
+            <div className="flex-1 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {children}
+            </div>
+            <Footer />
+          </div>
         </main>
-
-        {/* Site Footer */}
-        <Footer />
       </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
     </div>
   );
-}
+};
