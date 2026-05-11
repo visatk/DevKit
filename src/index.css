@@ -1,2 +1,47 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+/* Tailwind v4 native theme extensions */
+@theme {
+  /* Brand Tokens - Extracting your orange/indigo identity */
+  --color-brand-primary: var(--color-orange-500);
+  --color-brand-secondary: var(--color-indigo-500);
+  
+  /* Custom UI/UX Animations */
+  --animate-fade-in-up: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes fade-in-up {
+  0% { 
+    opacity: 0; 
+    transform: translateY(16px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.1; }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  
+  body {
+    /* Base typography and semantic selection colors */
+    @apply bg-zinc-950 text-zinc-50 antialiased selection:bg-orange-500/30 selection:text-orange-100;
+    /* Prevent overscroll bounce on macOS/iOS */
+    overscroll-behavior-y: none; 
+  }
+
+  /* Universal WCAG accessible focus states */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-orange-500/70 ring-offset-2 ring-offset-zinc-950 transition-shadow;
+  }
+}
