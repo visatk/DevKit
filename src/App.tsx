@@ -22,9 +22,17 @@ const Terms = lazy(() => import('@/pages/Terms'));
 const Privacy = lazy(() => import('@/pages/Privacy'));
 const IpCheck = lazy(() => import('@/pages/IpCheck'));
 
+// UX Improvement: Accessible, smooth loader to reduce cognitive friction
 const PageLoader = () => (
-  <div className="flex min-h-[50vh] items-center justify-center">
-    <Loader2 className="size-10 text-orange-500 animate-spin" />
+  <div 
+    className="flex min-h-[50dvh] items-center justify-center animate-fade-in-up"
+    role="status"
+    aria-label="Loading content..."
+  >
+    <div className="flex flex-col items-center gap-3">
+      <Loader2 className="size-8 text-orange-500 animate-spin" />
+      <span className="text-sm font-medium text-zinc-500 tracking-wide uppercase">Loading</span>
+    </div>
   </div>
 );
 
@@ -46,12 +54,13 @@ export default function App() {
               <Route path="card-checker" element={<CardChecker />} />
               <Route path="bin-checker" element={<BinChecker />} />
               <Route path="ip" element={<IpCheck />} />
+              
+              {/* Legal Routes */}
               <Route path="terms" element={<Terms />} />
               <Route path="privacy" element={<Privacy />} />
               
+              {/* User Identity & Comms Routes */}
               <Route path="messages" element={<Messages />} />
-              
-              {/* Authentication & User Routes */}
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="verify-email" element={<VerifyEmail />} />
