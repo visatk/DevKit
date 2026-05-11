@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "npm run build && vite preview",
-    "deploy": "wrangler types && npm run build && wrangler deploy",
+    "deploy": "npm run db:generate && npm run db:migrate:remote && wrangler types && npm run build && wrangler deploy",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply forum --local",
     "db:migrate:remote": "wrangler d1 migrations apply forum --remote",
