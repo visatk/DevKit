@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { AlertTriangle, Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { SeoHead } from '@/components/SeoHead';
-import { Logo } from '@/components/Logo';
 import React from 'react';
 
 function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
