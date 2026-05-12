@@ -2,6 +2,16 @@ import { useState, useRef, useEffect } from 'react';
 import { SeoHead } from '@/components/SeoHead';
 import { Square, Activity, Trash2, Zap, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 
+interface CheckCardResponse {
+  success: boolean;
+  status: string;
+  rawMsg?: string;
+  cleanMsg?: string;
+  binInfo?: string;
+  formattedOutput?: string;
+  message?: string;
+}
+
 interface CheckResult {
   payload: string;
   status: string;
@@ -40,7 +50,7 @@ export default function CardChecker() {
           signal: abortControllerRef.current.signal
         });
         
-        const data = await res.json() as any;
+        const data = await res.json() as CheckCardResponse;
         
         if (data.success) {
           setResults(prev => [{
@@ -57,8 +67,8 @@ export default function CardChecker() {
             formattedOutput: data.formattedOutput || `${lines[i]} - Error`
           }, ...prev]);
         }
-      } catch (err: any) {
-        if (err.name === 'AbortError') break;
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === 'AbortError') break;
         setResults(prev => [{
           payload: lines[i],
           status: 'Error',
