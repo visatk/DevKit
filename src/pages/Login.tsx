@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogIn, Mail, Lock, AlertCircle, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Mail, Lock, AlertTriangle, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { SeoHead } from '@/components/SeoHead';
 import { useAuth } from '@/context/AuthContext';
@@ -14,61 +14,39 @@ function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function InputField({
-  label, type, placeholder, value, onChange, icon: Icon, autoComplete
-}: {
-  label: string; type: string; placeholder: string;
-  value: string; onChange: (v: string) => void;
-  icon: React.ElementType; autoComplete?: string;
-}) {
+function InputField({ label, type, placeholder, value, onChange, icon: Icon, autoComplete }: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [focused, setFocused] = useState(false);
   const isPassword = type === 'password';
-  const inputType = isPassword && showPassword ? 'text' : type;
-  const fieldId = `field-${label.toLowerCase().replace(' ', '-')}`;
 
   return (
-    <div className="form-group">
-      <label htmlFor={fieldId} className="form-label">
+    <div className="space-y-1.5">
+      <label className="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider pl-1">
         {label}
       </label>
       <div
-        className="relative flex items-center rounded-lg transition-all duration-200"
-        style={{
-          background: 'var(--surface-hover)',
-          border: `1.5px solid ${focused ? 'var(--primary-base)' : 'var(--border-default)'}`,
-          boxShadow: focused ? '0 0 0 3px var(--primary-ring)' : 'none',
-        }}
+        className={`relative flex items-center rounded-xl transition-all duration-300 ${focused ? 'bg-[var(--surface-active)] ring-2 ring-[var(--orange)] shadow-[0_0_15px_var(--orange-dim)]' : 'bg-[var(--surface-raised)] ring-1 ring-[var(--border)] hover:ring-[var(--border-strong)]'}`}
       >
-        <Icon 
-          className="absolute left-3.5 w-4 h-4 shrink-0 transition-colors duration-200 pointer-events-none" 
-          style={{ color: focused ? 'var(--primary-base)' : 'var(--text-tertiary)' }} 
-          aria-hidden="true"
-        />
+        <Icon className={`absolute left-4 w-4 h-4 transition-colors ${focused ? 'text-[var(--orange)]' : 'text-[var(--text-muted)]'}`} />
         <input
-          id={fieldId}
           required
-          type={inputType}
+          type={isPassword && showPassword ? 'text' : type}
           placeholder={placeholder}
           value={value}
           onChange={e => onChange(e.target.value)}
           autoComplete={autoComplete}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="flex-1 bg-transparent py-3 pl-10 pr-12 text-sm font-medium outline-none"
-          style={{ color: 'var(--text-primary)' }}
-          aria-required="true"
+          className="w-full bg-transparent py-3.5 pl-11 pr-12 text-sm font-medium outline-none placeholder:text-[var(--text-muted)] text-[var(--text-primary)]"
         />
         {isPassword && (
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 p-2 rounded transition-colors duration-200 hover:text-primary-base focus:outline-offset-2 focus:outline-2 focus:outline-primary-base"
-            style={{ color: 'var(--text-tertiary)', minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            className="absolute right-2 p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors outline-none"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
-            aria-pressed={showPassword}
           >
-            {showPassword ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
+            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
         )}
       </div>
@@ -94,9 +72,10 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!turnstileToken) { setError('Please complete the security verification.'); return; }
+    if (!turnstileToken) { setError('Please complete security verification.'); return; }
     setIsSubmitting(true);
     setError('');
+    
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -107,7 +86,7 @@ export default function Login() {
       if (!res.ok) {
         setTurnstileToken('');
         setTurnstileKey(k => k + 1);
-        throw new Error(data.error?.issues?.[0]?.message || data.error || 'Authentication failed');
+        throw new Error(data.error?.issues?.[0]?.message || data.error || 'Authentication rejected by edge.');
       }
       await refreshUser();
       navigate('/');
@@ -119,149 +98,81 @@ export default function Login() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen p-4 relative" role="main" aria-label="Sign in page">
-      <SeoHead title="Sign In | DevKit" description="Sign in to access the DevKit platform securely. DevKit is a professional development toolkit for modern web applications." />
+    <main className="flex items-center justify-center min-h-[100dvh] p-4 sm:p-6 relative isolate">
+      <SeoHead title="Authenticate | DevKit" description="Secure access to the DevKit ecosystem." />
 
-      {/* Decorative gradient backgrounds - non-interactive */}
-      <div className="absolute top-1/4 -left-32 w-80 h-80 rounded-full pointer-events-none -z-10 opacity-40 hidden lg:block" aria-hidden="true"
-        style={{ background: 'radial-gradient(circle, var(--primary-ring) 0%, transparent 70%)', filter: 'blur(80px)' }}
-      />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full pointer-events-none -z-10 opacity-30 hidden lg:block" aria-hidden="true"
-        style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)', filter: 'blur(100px)' }}
-      />
+      <div className="absolute inset-0 -z-10 bg-[var(--bg)]">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--orange)]/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-500/10 rounded-full blur-[120px]" />
+      </div>
 
-      <section className="w-full max-w-md rounded-xl overflow-hidden animate-fade-up card-elevated"
-        style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--border-default)',
-        }}
-      >
-        {/* Top accent border */}
-        <div className="h-1 w-full bg-gradient-to-r from-primary-base via-primary-light to-transparent" aria-hidden="true" />
+      <section className="w-full max-w-[420px] glass rounded-3xl overflow-hidden shadow-2xl shadow-black/50 border border-[var(--border)] animation-fade-up">
+        <div className="h-1.5 w-full bg-gradient-to-r from-[var(--orange)] to-amber-500" />
 
         <div className="p-8 sm:p-10">
-          {/* Page Header */}
           <header className="text-center mb-8">
-            <div className="inline-flex items-center justify-center mb-4">
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'var(--primary-tint)', border: '1px solid var(--primary-ring)' }}>
-                <Logo className="w-6 h-6" aria-hidden="true" />
-              </div>
+            <div className="mx-auto w-14 h-14 rounded-2xl flex items-center justify-center bg-[var(--orange-dim)] border border-[var(--orange-border)] mb-5 shadow-inner">
+              <Logo className="w-8 h-8 text-[var(--orange)]" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
-              Welcome Back
+            <h1 className="text-2xl font-black tracking-tight mb-2 text-[var(--text-primary)]" style={{ fontFamily: 'Syne, sans-serif' }}>
+              System Login
             </h1>
-            <p className="text-sm text-text-secondary">
-              Sign in to your account to access all DevKit features
+            <p className="text-sm font-medium text-[var(--text-muted)]">
+              Establish connection to your developer environment.
             </p>
           </header>
 
-          {/* GitHub OAuth Button - Social login option */}
           <button
             onClick={() => window.location.href = '/api/auth/github'}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-all duration-200 border hover:border-primary-base hover:bg-primary-tint active:scale-95 focus:outline-offset-2 focus:outline-2 focus:outline-primary-base"
-            style={{ background: 'var(--surface-hover)', border: '1.5px solid var(--border-default)', color: 'var(--text-primary)' }}
-            aria-label="Sign in with GitHub account"
+            className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl text-sm font-bold transition-all border border-[var(--border)] bg-[var(--surface-raised)] hover:bg-[var(--surface-hover)] hover:border-[var(--text-secondary)] active:scale-[0.98] text-[var(--text-primary)]"
           >
-            <GitHubIcon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-            <span>Continue with GitHub</span>
+            <GitHubIcon className="w-5 h-5" />
+            Authenticate via GitHub
           </button>
 
-          {/* Divider - Alternate authentication method */}
-          <div className="relative my-6" aria-hidden="true">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border-default" />
-            </div>
+          <div className="relative my-7">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[var(--border-strong)]" /></div>
             <div className="relative flex justify-center">
-              <span className="px-3 text-xs font-semibold uppercase tracking-wider" style={{ background: 'var(--surface)', color: 'var(--text-tertiary)' }}>
-                Or continue with email
+              <span className="px-4 text-[10px] font-black uppercase tracking-widest bg-[var(--surface)] text-[var(--text-muted)] rounded-full border border-[var(--border)]">
+                OR PROTOCOL
               </span>
             </div>
           </div>
 
-          {/* Error Alert - Accessibility-friendly notification */}
           {error && (
-            <div 
-              className="mb-5 flex items-start gap-3 p-4 rounded-lg animate-fade-in" 
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-              style={{ background: 'rgba(239, 68, 68, 0.08)', border: '1.5px solid rgba(239, 68, 68, 0.3)' }}
-            >
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 flex-shrink-0" style={{ color: 'var(--error-base)' }} aria-hidden="true" />
+            <div className="mb-6 flex items-start gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 animation-fade-in">
+              <AlertTriangle className="w-5 h-5 shrink-0 text-red-500" />
               <div>
-                <p className="text-sm font-semibold" style={{ color: 'var(--error-base)' }}>Sign in failed</p>
-                <p className="text-sm mt-1" style={{ color: 'var(--error-base)' }}>{error}</p>
+                <p className="text-sm font-bold text-red-500">Access Denied</p>
+                <p className="text-xs font-medium text-red-400 mt-0.5">{error}</p>
               </div>
             </div>
           )}
 
-          {/* Authentication Form */}
-          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-            {/* Email Input */}
-            <InputField 
-              label="Email Address" 
-              type="email" 
-              placeholder="you@example.com" 
-              value={email} 
-              onChange={setEmail} 
-              icon={Mail} 
-              autoComplete="email" 
-            />
-            
-            {/* Password Input */}
-            <InputField 
-              label="Password" 
-              type="password" 
-              placeholder="••••••••" 
-              value={password} 
-              onChange={setPassword} 
-              icon={Lock} 
-              autoComplete="current-password" 
-            />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <InputField label="Email Address" type="email" placeholder="sysadmin@network.local" value={email} onChange={setEmail} icon={Mail} autoComplete="email" />
+            <InputField label="Secure Password" type="password" placeholder="••••••••••••" value={password} onChange={setPassword} icon={Lock} autoComplete="current-password" />
 
-            {/* Security Verification - Turnstile */}
-            <fieldset className="flex justify-center py-4 rounded-lg" style={{ background: 'var(--surface-hover)', border: '1.5px solid var(--border-default)' }}>
-              <legend className="sr-only">Security verification</legend>
-              <Turnstile
-                key={turnstileKey}
-                siteKey={siteKey}
-                onSuccess={setTurnstileToken}
-                onError={() => setTurnstileToken('')}
-                onExpire={() => setTurnstileToken('')}
-                options={{ theme: 'auto', size: 'flexible' }}
-              />
-            </fieldset>
+            <div className="pt-2 flex justify-center">
+              <div className="rounded-xl overflow-hidden ring-1 ring-[var(--border)] inline-block">
+                <Turnstile key={turnstileKey} siteKey={siteKey} onSuccess={setTurnstileToken} onError={() => setTurnstileToken('')} options={{ theme: 'dark' }} />
+              </div>
+            </div>
 
-            {/* Submit Button - Primary action */}
             <button
               type="submit"
               disabled={isSubmitting || !turnstileToken}
-              className="btn-lg w-full flex items-center justify-center gap-2 rounded-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
-              style={{
-                background: isSubmitting ? 'var(--primary-dark)' : 'linear-gradient(135deg, var(--primary-base) 0%, var(--primary-light) 100%)',
-                color: 'white',
-                boxShadow: isSubmitting ? 'none' : '0 4px 12px rgba(243, 128, 32, 0.25)',
-                minHeight: '44px'
-              }}
-              aria-busy={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-black transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] bg-[var(--orange)] text-white shadow-lg shadow-[var(--orange-dim)] hover:shadow-[var(--orange-border)] mt-2"
             >
-              {isSubmitting ? (
-                <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> <span>Signing in</span></>
-              ) : (
-                <><LogIn className="w-4 h-4" aria-hidden="true" /> <span>Sign In</span></>
-              )}
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
+              {isSubmitting ? 'Establishing Connection...' : 'Initialize Session'}
             </button>
           </form>
 
-          {/* Registration Link */}
-          <div className="text-center text-sm mt-8 pt-8 border-t border-border-default" style={{ color: 'var(--text-secondary)' }}>
-            <span>Don&apos;t have an account? </span>
-            <Link 
-              to="/register" 
-              className="font-semibold hover:text-primary-base hover:underline transition-colors duration-200 inline-flex items-center gap-1 focus:outline-offset-2 focus:outline-2 focus:outline-primary-base" 
-              style={{ color: 'var(--primary-base)' }}
-            >
-              Create account <ArrowRight className="w-3 h-3 mt-0.5" aria-hidden="true" />
+          <div className="text-center text-xs font-semibold mt-8 pt-6 border-t border-[var(--border)] text-[var(--text-muted)]">
+            No identity vector found? {' '}
+            <Link to="/register" className="text-[var(--orange)] hover:text-amber-400 transition-colors uppercase tracking-wider ml-1">
+              Construct One <ArrowRight className="inline w-3 h-3 -mt-0.5" />
             </Link>
           </div>
         </div>
