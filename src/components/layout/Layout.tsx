@@ -20,10 +20,7 @@ export const Layout: React.FC = () => {
       />
 
       <div className="flex-1 flex flex-col relative z-10 min-w-0">
-        <MobileHeader 
-          isOpen={isSidebarOpen} 
-          setIsOpen={setIsSidebarOpen} 
-        />
+        <MobileHeader />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth">
           <div className="h-full flex flex-col">
