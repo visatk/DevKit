@@ -1,40 +1,54 @@
 import { useState, useRef, useEffect } from "react";
 
-// ─── Mock BIN Database ─────────────────────────────────────────────────────
-const BIN_DB = {
-  "424242": { brand: "VISA", funding: "CREDIT", type: "CLASSIC", country: "US", pan_length: 16, account_range_low: "4242420000000000", account_range_high: "4242429999999999" },
-  "411111": { brand: "VISA", funding: "CREDIT", type: "SIGNATURE", country: "US", pan_length: 16, account_range_low: "4111110000000000", account_range_high: "4111119999999999" },
-  "455673": { brand: "VISA", funding: "DEBIT", type: "ELECTRON", country: "GB", pan_length: 16, account_range_low: "4556730000000000", account_range_high: "4556739999999999" },
-  "450875": { brand: "VISA", funding: "PREPAID", type: "GIFT", country: "CA", pan_length: 16, account_range_low: "4508750000000000", account_range_high: "4508759999999999" },
-  "555555": { brand: "MASTERCARD", funding: "CREDIT", type: "WORLD", country: "US", pan_length: 16, account_range_low: "5555550000000000", account_range_high: "5555559999999999" },
-  "545454": { brand: "MASTERCARD", funding: "DEBIT", type: "STANDARD", country: "DE", pan_length: 16, account_range_low: "5454540000000000", account_range_high: "5454549999999999" },
-  "510510": { brand: "MASTERCARD", funding: "CREDIT", type: "PLATINUM", country: "FR", pan_length: 16, account_range_low: "5105100000000000", account_range_high: "5105109999999999" },
-  "378282": { brand: "AMEX", funding: "CREDIT", type: "GREEN", country: "US", pan_length: 15, account_range_low: "378282000000000", account_range_high: "378282999999999" },
-  "371449": { brand: "AMEX", funding: "CREDIT", type: "GOLD", country: "US", pan_length: 15, account_range_low: "371449000000000", account_range_high: "371449999999999" },
-  "6011111": { brand: "DISCOVER", funding: "CREDIT", type: "STANDARD", country: "US", pan_length: 16, account_range_low: "6011111000000000", account_range_high: "6011111999999999" },
-  "356600": { brand: "JCB", funding: "CREDIT", type: "CLASSIC", country: "JP", pan_length: 16, account_range_low: "3566000000000000", account_range_high: "3566009999999999" },
-};
+// ─── Interfaces & Types ────────────────────────────────────────────────────
+interface BinMetadata {
+  brand?: string;
+  funding?: string;
+  type?: string;
+  country?: string;
+  pan_length?: number;
+  account_range_low?: string;
+  account_range_high?: string;
+}
 
-const BRAND_COLORS = {
+interface CheckBinResponse {
+  success: boolean;
+  metadata?: BinMetadata;
+  message?: string;
+}
+
+interface ExtractBinResponse {
+  success: boolean;
+  bins?: string[];
+  error?: string;
+}
+
+type StatusType = "Found" | "Not Found" | "Error";
+
+interface ResultData {
+  raw: string;
+  status: StatusType;
+  data: BinMetadata | null;
+  time: number;
+}
+
+interface ProgressState {
+  current: number;
+  total: number;
+}
+
+// ─── UI Constants ──────────────────────────────────────────────────────────
+const BRAND_COLORS: Record<string, { color: string; accent: string }> = {
   VISA: { color: "#1a1f71", accent: "#f7a600" },
   MASTERCARD: { color: "#eb001b", accent: "#f79e1b" },
   AMEX: { color: "#007bc1", accent: "#00aeef" },
   DISCOVER: { color: "#e65c00", accent: "#f9d423" },
   JCB: { color: "#003087", accent: "#009f6b" },
+  UNIONPAY: { color: "#d93a30", accent: "#ffffff" },
 };
 
-const BRAND_SYMBOLS = { VISA: "◈", MASTERCARD: "◉", AMEX: "◆", DISCOVER: "◇", JCB: "✦" };
+const BRAND_SYMBOLS: Record<string, string> = { VISA: "◈", MASTERCARD: "◉", AMEX: "◆", DISCOVER: "◇", JCB: "✦" };
 
-function lookupBin(raw) {
-  const bin = raw.replace(/\D/g, "").substring(0, 8);
-  for (let len = 8; len >= 6; len--) {
-    const key = bin.substring(0, len);
-    if (BIN_DB[key]) return { found: true, data: BIN_DB[key] };
-  }
-  return { found: false, data: null };
-}
-
-// ─── Sparkline mini-component ──────────────────────────────────────────────
 function Scanline() {
   return (
     <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", opacity: 0.03 }}>
@@ -45,8 +59,7 @@ function Scanline() {
   );
 }
 
-// ─── Status Badge ──────────────────────────────────────────────────────────
-function StatusPip({ status }) {
+function StatusPip({ status }: { status: StatusType }) {
   const cfg = {
     Found: { color: "#10b981", label: "FOUND", glow: "0 0 8px #10b98188" },
     "Not Found": { color: "#ef4444", label: "MISS", glow: "0 0 8px #ef444488" },
@@ -66,9 +79,9 @@ function StatusPip({ status }) {
   );
 }
 
-// ─── Brand Chip ────────────────────────────────────────────────────────────
-function BrandChip({ brand }) {
-  const cfg = BRAND_COLORS[brand] || { color: "#6b7280", accent: "#9ca3af" };
+function BrandChip({ brand }: { brand: string }) {
+  const normalizedBrand = brand.toUpperCase();
+  const cfg = BRAND_COLORS[normalizedBrand] || { color: "#6b7280", accent: "#9ca3af" };
   return (
     <span style={{
       fontFamily: "monospace", fontSize: 11, fontWeight: 700,
@@ -76,39 +89,37 @@ function BrandChip({ brand }) {
       background: `${cfg.color}22`, border: `1px solid ${cfg.color}55`,
       color: cfg.accent,
     }}>
-      {BRAND_SYMBOLS[brand] || "◻"} {brand}
+      {BRAND_SYMBOLS[normalizedBrand] || "◻"} {normalizedBrand}
     </span>
   );
 }
 
-// ─── Funding Tag ───────────────────────────────────────────────────────────
-function FundingTag({ type }) {
-  const map = {
+function FundingTag({ type }: { type: string }) {
+  const normalizedType = type.toUpperCase();
+  const map: Record<string, string> = {
     CREDIT: "#818cf8",
     DEBIT: "#34d399",
     PREPAID: "#fb923c",
     GIFT: "#f472b6",
   };
-  const c = map[type] || "#9ca3af";
+  const c = map[normalizedType] || "#9ca3af";
   return (
     <span style={{
       fontFamily: "monospace", fontSize: 10, fontWeight: 700,
       letterSpacing: "0.12em", padding: "2px 6px", borderRadius: 2,
       background: `${c}18`, border: `1px solid ${c}44`, color: c,
     }}>
-      {type}
+      {normalizedType}
     </span>
   );
 }
 
-// ─── Result Row ────────────────────────────────────────────────────────────
-function ResultRow({ result, index, expanded, onToggle }) {
+function ResultRow({ result, index, expanded, onToggle }: { result: ResultData; index: number; expanded: boolean; onToggle: () => void }) {
   const { raw, status, data, time } = result;
-  const isExpanded = expanded;
+  
   const gridFields = data ? [
     ["BRAND", data.brand],
     ["FUNDING", data.funding],
-    ["TYPE", data.type],
     ["COUNTRY", data.country],
     ["PAN LEN", data.pan_length],
     ["RANGE LOW", data.account_range_low?.slice(-8)],
@@ -147,19 +158,19 @@ function ResultRow({ result, index, expanded, onToggle }) {
         </span>
         {data && (
           <>
-            <BrandChip brand={data.brand} />
-            <FundingTag type={data.funding} />
+            {data.brand && <BrandChip brand={data.brand} />}
+            {data.funding && <FundingTag type={data.funding} />}
             <span style={{ fontFamily: "monospace", fontSize: 10, color: "#6b7280" }}>{data.country}</span>
           </>
         )}
         <span style={{ fontFamily: "monospace", fontSize: 10, color: "#374151", marginLeft: "auto" }}>{time}ms</span>
         {data && (
-          <svg width={12} height={12} viewBox="0 0 12 12" style={{ color: "#4b5563", transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>
+          <svg width={12} height={12} viewBox="0 0 12 12" style={{ color: "#4b5563", transform: expanded ? "rotate(180deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>
             <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth={1.5} fill="none" strokeLinecap="round" />
           </svg>
         )}
       </button>
-      {isExpanded && data && (
+      {expanded && data && (
         <div style={{
           borderTop: "1px solid #1f2937",
           padding: "12px 16px",
@@ -169,9 +180,9 @@ function ResultRow({ result, index, expanded, onToggle }) {
           gap: 8,
         }}>
           {gridFields.map(([k, v]) => (
-            <div key={k} style={{ padding: "8px 10px", background: "#0d1117", border: "1px solid #1f2937", borderRadius: 4 }}>
-              <div style={{ fontFamily: "monospace", fontSize: 9, letterSpacing: "0.12em", color: "#4b5563", marginBottom: 4 }}>{k}</div>
-              <div style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "#94a3b8" }}>{v || "—"}</div>
+            <div key={String(k)} style={{ padding: "8px 10px", background: "#0d1117", border: "1px solid #1f2937", borderRadius: 4 }}>
+              <div style={{ fontFamily: "monospace", fontSize: 9, letterSpacing: "0.12em", color: "#4b5563", marginBottom: 4 }}>{String(k)}</div>
+              <div style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "#94a3b8" }}>{String(v) || "—"}</div>
             </div>
           ))}
         </div>
@@ -180,35 +191,39 @@ function ResultRow({ result, index, expanded, onToggle }) {
   );
 }
 
-// ─── Main Component ────────────────────────────────────────────────────────
 export default function BinChecker() {
-  const [mode, setMode] = useState("check"); // "check" | "extract"
-  const [input, setInput] = useState("");
-  const [extractText, setExtractText] = useState("");
-  const [isChecking, setIsChecking] = useState(false);
-  const [results, setResults] = useState([]);
-  const [progress, setProgress] = useState({ current: 0, total: 0 });
-  const [expandedIdx, setExpandedIdx] = useState(null);
-  const [faqOpen, setFaqOpen] = useState(null);
-  const [copied, setCopied] = useState(false);
-  const [tick, setTick] = useState(0);
-  const abortRef = useRef(false);
-
-  // Blinking clock
-  useEffect(() => {
-    const id = setInterval(() => setTick(t => t + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const [mode, setMode] = useState<string>("check");
+  const [input, setInput] = useState<string>("");
+  const [extractText, setExtractText] = useState<string>("");
+  const [isChecking, setIsChecking] = useState<boolean>(false);
+  const [results, setResults] = useState<ResultData[]>([]);
+  const [progress, setProgress] = useState<ProgressState>({ current: 0, total: 0 });
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+  const [copied, setCopied] = useState<boolean>(false);
+  const abortRef = useRef<boolean>(false);
 
   const now = new Date();
   const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
 
-  const handleExtract = () => {
-    const matches = extractText.match(/\b\d{6,8}\b/g) || [];
-    const unique = [...new Set(matches)];
-    if (unique.length) {
-      setInput(unique.join("\n"));
-      setMode("check");
+  const handleExtract = async () => {
+    if (!extractText.trim()) return;
+    
+    try {
+      const res = await fetch('/api/bin-extractor/extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: extractText, extract8Digit: false })
+      });
+      
+      const data = await res.json() as ExtractBinResponse;
+      
+      if (data.success && data.bins && data.bins.length > 0) {
+        setInput(data.bins.join("\n"));
+        setMode("check");
+      }
+    } catch (err) {
+      console.error("Failed to extract BINs:", err);
     }
   };
 
@@ -226,17 +241,43 @@ export default function BinChecker() {
 
     for (let i = 0; i < bins.length; i++) {
       if (abortRef.current) break;
-      await new Promise(r => setTimeout(r, 180 + Math.random() * 120));
       const t0 = Date.now();
-      const { found, data } = lookupBin(bins[i]);
-      const elapsed = Date.now() - t0 + Math.floor(Math.random() * 80 + 20);
+      
+      let status: StatusType = "Error";
+      let metadata: BinMetadata | null = null;
+      
+      try {
+        const res = await fetch('/api/tools/check-bin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bin: bins[i] })
+        });
+        
+        const data = await res.json() as CheckBinResponse;
+        
+        if (data.success && data.metadata) {
+          status = "Found";
+          metadata = data.metadata;
+        } else {
+          status = "Not Found";
+        }
+      } catch (err) {
+        status = "Error";
+      }
+
+      const elapsed = Date.now() - t0;
+      
       setResults(prev => [{
         raw: bins[i],
-        status: found ? "Found" : "Not Found",
-        data: found ? data : null,
+        status,
+        data: metadata,
         time: elapsed,
       }, ...prev]);
+      
       setProgress(p => ({ ...p, current: i + 1 }));
+      
+      // Throttle strictly to prevent Node/Edge exhaustion on bulk lookups
+      await new Promise(r => setTimeout(r, 200)); 
     }
     setIsChecking(false);
   };
@@ -249,10 +290,10 @@ export default function BinChecker() {
   };
 
   const handleExport = () => {
-    const header = "BIN,Status,Brand,Funding,Type,Country,PAN Length,Range Low,Range High,Time(ms)";
+    const header = "BIN,Status,Brand,Funding,Country,PAN Length,Range Low,Range High,Time(ms)";
     const rows = results.map(r => [
       r.raw, r.status, r.data?.brand || "", r.data?.funding || "",
-      r.data?.type || "", r.data?.country || "", r.data?.pan_length || "",
+      r.data?.country || "", r.data?.pan_length || "",
       r.data?.account_range_low || "", r.data?.account_range_high || "", r.time,
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(","));
     const csv = [header, ...rows].join("\n");
@@ -284,24 +325,14 @@ export default function BinChecker() {
     }}>
       <Scanline />
 
-      {/* Grid background */}
       <div style={{
         position: "fixed", inset: 0, pointerEvents: "none",
         backgroundImage: "linear-gradient(#1f293710 1px, transparent 1px), linear-gradient(90deg, #1f293710 1px, transparent 1px)",
         backgroundSize: "40px 40px",
       }} />
 
-      {/* Glow orb */}
-      <div style={{
-        position: "fixed", top: -200, right: -200, width: 600, height: 600,
-        borderRadius: "50%",
-        background: "radial-gradient(circle, #1e3a5f44 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
-
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 20px", position: "relative" }}>
 
-        {/* ── Header ── */}
         <div style={{ marginBottom: 40 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -334,11 +365,10 @@ export default function BinChecker() {
             <span style={{ color: "#64748b" }}>LOOKUP</span>
           </h1>
           <p style={{ color: "#4b5563", fontSize: 13, letterSpacing: "0.05em", maxWidth: 480 }}>
-            Decode card brand, funding type, country, and issuer from BIN / IIN prefixes.
+            Decode card brand, funding type, country, and issuer from BIN / IIN prefixes securely.
           </p>
         </div>
 
-        {/* ── Mode Toggle ── */}
         <div style={{
           display: "inline-flex", background: "#0d1117",
           border: "1px solid #1f2937", borderRadius: 6, padding: 3, marginBottom: 28,
@@ -358,7 +388,6 @@ export default function BinChecker() {
           ))}
         </div>
 
-        {/* ── Extract Mode ── */}
         {mode === "extract" && (
           <div style={{
             background: "#0d1117", border: "1px solid #1f2937",
@@ -371,7 +400,7 @@ export default function BinChecker() {
               rows={7}
               value={extractText}
               onChange={e => setExtractText(e.target.value)}
-              placeholder={"card=4242420000000000 exp=12/26 cvv=123\nbin:555555 status:active\n378282000000000 USD approved"}
+              placeholder={"card=4242420000000000 exp=12/26 cvv=123\nbin:555555 status:active"}
               style={{
                 width: "100%", boxSizing: "border-box",
                 background: "#060810", border: "1px solid #1f2937",
@@ -392,7 +421,7 @@ export default function BinChecker() {
                   letterSpacing: "0.12em", opacity: extractText.trim() ? 1 : 0.4,
                 }}
               >
-                ⌕ EXTRACT &amp; QUEUE
+                ⌕ EXTRACT VIA API
               </button>
               <button
                 onClick={() => setExtractText("")}
@@ -409,10 +438,8 @@ export default function BinChecker() {
           </div>
         )}
 
-        {/* ── Main Grid ── */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: 16, marginBottom: 24 }}>
 
-          {/* Input Panel */}
           <div style={{ background: "#0d1117", border: "1px solid #1f2937", borderRadius: 8, padding: 24 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <span style={{ fontSize: 10, letterSpacing: "0.2em", color: "#4b5563" }}>INPUT QUEUE</span>
@@ -430,7 +457,7 @@ export default function BinChecker() {
               rows={9}
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder={"424242\n555555\n378282\n371449\n6011111"}
+              placeholder={"424242\n555555"}
               style={{
                 width: "100%", boxSizing: "border-box",
                 background: "#060810", border: "1px solid #1f2937",
@@ -456,7 +483,7 @@ export default function BinChecker() {
                   transition: "all 0.2s",
                 }}
               >
-                {isChecking ? `⟳ ${progress.current}/${progress.total} SCANNING` : "◈ RUN LOOKUP"}
+                {isChecking ? `⟳ ${progress.current}/${progress.total} SCANNING` : "◈ RUN API LOOKUP"}
               </button>
               {isChecking && (
                 <button
@@ -493,7 +520,6 @@ export default function BinChecker() {
             )}
           </div>
 
-          {/* Stats Panel */}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {[
               { label: "TOTAL", value: results.length, color: "#94a3b8", border: "#1f2937", bg: "#0d1117" },
@@ -522,7 +548,6 @@ export default function BinChecker() {
           </div>
         </div>
 
-        {/* ── Results ── */}
         {results.length > 0 && (
           <div style={{
             background: "#0d1117", border: "1px solid #1f2937",
@@ -556,7 +581,6 @@ export default function BinChecker() {
               </div>
             </div>
 
-            {/* Column header */}
             <div style={{
               display: "flex", gap: 12, padding: "4px 16px",
               marginBottom: 6,
@@ -582,7 +606,6 @@ export default function BinChecker() {
           </div>
         )}
 
-        {/* ── FAQ ── */}
         <div style={{ marginBottom: 16 }}>
           <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#374151", marginBottom: 16 }}>
             FAQ · REFERENCE
@@ -622,19 +645,6 @@ export default function BinChecker() {
               )}
             </div>
           ))}
-        </div>
-
-        {/* Footer */}
-        <div style={{
-          borderTop: "1px solid #1f2937", paddingTop: 16,
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-        }}>
-          <span style={{ fontFamily: "monospace", fontSize: 9, color: "#1f2937", letterSpacing: "0.15em" }}>
-            BIN LOOKUP ENGINE · DEMO DATA
-          </span>
-          <span style={{ fontFamily: "monospace", fontSize: 9, color: "#1f2937", letterSpacing: "0.15em" }}>
-            {found}/{results.length} RESOLVED
-          </span>
         </div>
       </div>
     </div>
