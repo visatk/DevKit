@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, memo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
-  ArrowLeft, User, Clock, MessageCircle, Send, Flame, Code, 
+  ArrowLeft, User, Clock, MessageCircle, Send, Flame, 
   Pin, LockKeyhole, ShieldAlert, Eye, Crown, Shield, Loader2, Key, Terminal
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
