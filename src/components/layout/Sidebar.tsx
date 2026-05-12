@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
-  Terminal, Home, MessagesSquare, Users, Settings, 
+  Home, MessagesSquare, Users, Settings, 
   CreditCard, ShieldCheck, Cpu, Database, ChevronLeft
 } from 'lucide-react';
 import { Logo } from '../Logo';
@@ -43,7 +43,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}
     >
-      {/* Sidebar Header */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-[var(--border)]">
         <Logo className="h-8" />
         <button 
@@ -54,7 +53,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         </button>
       </div>
 
-      {/* Navigation Links */}
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8 scrollbar-hide">
         {navGroups.map((group, idx) => (
           <div key={idx}>
@@ -80,7 +78,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                     `}
                   >
                     <div className="flex items-center gap-3 relative">
-                      {/* Active Indicator Line */}
                       {isActive && (
                         <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1 h-6 bg-[var(--orange)] rounded-r-full shadow-[0_0_10px_var(--orange)]" />
                       )}
@@ -95,7 +92,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         ))}
       </div>
 
-      {/* User Section / Bottom Actions */}
       <div className="p-4 border-t border-[var(--border)]">
         <NavLink
           to="/profile"
