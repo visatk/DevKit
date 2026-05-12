@@ -30,7 +30,7 @@ export function ToolPageHeader({ badge, badgeIcon: BadgeIcon, title, description
       </h1>
 
       {/* Page Description */}
-      <p 
+      <p
         className="text-base sm:text-lg max-w-3xl leading-relaxed text-pretty"
         style={{ color: 'var(--text-secondary)' }}
       >
@@ -48,16 +48,11 @@ interface ToolCardProps {
 export function ToolCard({ children, className = '' }: ToolCardProps) {
   return (
     <article
-      className={`card rounded-xl overflow-hidden transition-all duration-200 hover:border-primary-base hover:shadow-lg ${className}`}
-      style={{ 
-        background: 'var(--surface)', 
-        border: '1px solid var(--border-default)',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)'
-      }}
+      className={`glass card-interactive rounded-2xl overflow-hidden ${className}`}
     >
       {/* Decorative top accent */}
-      <div 
-        className="h-px w-full bg-gradient-to-r from-primary-base/60 via-primary-light/30 to-transparent" 
+      <div
+        className="h-px w-full bg-gradient-to-r from-[var(--orange)] via-[var(--orange-dim)] to-transparent"
         aria-hidden="true"
       />
       {children}

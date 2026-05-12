@@ -13,18 +13,12 @@ interface IpData {
 
 function InfoRow({ label, value, copyId, copiedId, onCopy }: { label: string; value: string; copyId: string; copiedId: string | null; onCopy: (v: string, id: string) => void; }) {
   return (
-    <div
-      className="flex items-center justify-between py-3 px-4 rounded-xl gap-3"
-      style={{ background: 'var(--surface-raised)', border: '1px solid var(--border)' }}
-    >
-      <span className="badge-mono text-[10px] shrink-0" style={{ color: 'var(--text-muted)' }}>{label}</span>
-      <span className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)', fontFamily: "'JetBrains Mono', monospace" }}>{value || '—'}</span>
+    <div className="flex items-center justify-between py-3 px-4 rounded-xl gap-3 bg-[var(--surface-raised)] border border-[var(--border)]">
+      <span className="badge-mono text-[10px] shrink-0 text-[var(--text-muted)]">{label}</span>
+      <span className="text-sm font-semibold truncate text-[var(--text-primary)] font-mono">{value || '—'}</span>
       <button
         onClick={() => onCopy(value, copyId)}
-        className="shrink-0 p-1.5 rounded-lg transition-colors"
-        style={{ color: 'var(--text-muted)' }}
-        onMouseEnter={e => { e.currentTarget.style.background = 'var(--border)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+        className="shrink-0 p-1.5 rounded-lg transition-colors text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-[var(--text-primary)]"
       >
         {copiedId === copyId ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
       </button>
@@ -35,14 +29,7 @@ function InfoRow({ label, value, copyId, copiedId, onCopy }: { label: string; va
 function SecurityFlag({ active, label, icon: Icon, dangerColor }: { active: boolean; label: string; icon: any; dangerColor?: boolean; }) {
   const isRisk = active && dangerColor;
   return (
-    <div
-      className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold"
-      style={{
-        background: isRisk ? 'rgba(239,68,68,0.08)' : active ? 'rgba(16,185,129,0.08)' : 'var(--surface-raised)',
-        border: `1px solid ${isRisk ? 'rgba(239,68,68,0.2)' : active ? 'rgba(16,185,129,0.2)' : 'var(--border)'}`,
-        color: isRisk ? '#EF4444' : active ? '#10B981' : 'var(--text-muted)',
-      }}
-    >
+    <div className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold border ${isRisk ? 'bg-red-500/10 border-red-500/20 text-[#EF4444]' : active ? 'bg-emerald-500/10 border-emerald-500/20 text-[#10B981]' : 'bg-[var(--surface-raised)] border-[var(--border)] text-[var(--text-muted)]'}`}>
       <Icon className="size-4 shrink-0" />
       <span>{label}</span>
       <span className="ml-auto badge-mono text-[10px]">{active ? 'YES' : 'NO'}</span>
@@ -103,23 +90,19 @@ export default function IpCheck() {
       <ToolCard className="mb-6">
         <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-3 p-5">
           <div className="flex-1 relative">
-            <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4" style={{ color: 'var(--text-muted)' }} />
+            <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-[var(--text-muted)]" />
             <input
               type="text"
               placeholder="Enter IP address (leave blank to scan your own)..."
               value={ipInput}
               onChange={e => setIpInput(e.target.value)}
-              className="w-full py-3 pl-10 pr-4 rounded-xl text-sm font-medium outline-none transition-all"
-              style={{ background: 'var(--surface-raised)', border: '1px solid var(--border-strong)', color: 'var(--text-primary)' }}
-              onFocus={e => { e.currentTarget.style.borderColor = 'var(--orange)'; e.currentTarget.style.boxShadow = '0 0 0 3px var(--orange-dim)'; }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.boxShadow = 'none'; }}
+              className="w-full py-3 pl-10 pr-4 rounded-xl text-sm font-medium outline-none transition-all bg-[var(--surface-raised)] border border-[var(--border-strong)] text-[var(--text-primary)] focus:border-[var(--orange)] focus:shadow-[0_0_0_3px_var(--orange-dim)]"
             />
           </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-60 shrink-0 active:scale-95"
-            style={{ background: 'var(--orange)', color: '#fff' }}
+            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-60 shrink-0 active:scale-95 bg-[var(--orange)] text-[#fff] hover:opacity-90"
           >
             {isLoading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
             {isLoading ? 'Analyzing...' : 'Analyze IP'}
@@ -132,7 +115,7 @@ export default function IpCheck() {
           <div className="relative size-16">
             <Loader2 className="size-16 animate-spin text-orange-500 opacity-80" />
           </div>
-          <p className="badge-mono" style={{ color: 'var(--text-muted)' }}>Scanning target...</p>
+          <p className="badge-mono text-[var(--text-muted)]">Scanning target...</p>
         </div>
       )}
 
@@ -142,10 +125,10 @@ export default function IpCheck() {
           {/* Risk Score */}
           <ToolCard className="md:col-span-2 xl:col-span-1">
             <div className="p-6 flex flex-col items-center text-center">
-              <p className="badge-mono mb-4" style={{ color: 'var(--text-muted)' }}>Risk Score</p>
+              <p className="badge-mono mb-4 text-[var(--text-muted)]">Risk Score</p>
               <div className="relative size-36">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 160 160">
-                  <circle cx="80" cy="80" r="70" fill="none" strokeWidth="10" style={{ stroke: 'var(--border)' }} />
+                  <circle cx="80" cy="80" r="70" fill="none" strokeWidth="10" className="stroke-[var(--border)]" />
                   <circle
                     cx="80" cy="80" r="70" fill="none" strokeWidth="10"
                     stroke={riskColor}
@@ -157,7 +140,7 @@ export default function IpCheck() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-4xl font-black" style={{ fontFamily: 'Syne, sans-serif', color: riskColor }}>{data.security.riskScore}</span>
-                  <span className="text-xs font-bold" style={{ color: 'var(--text-muted)' }}>/100</span>
+                  <span className="text-xs font-bold text-[var(--text-muted)]">/100</span>
                 </div>
               </div>
               <div
@@ -174,10 +157,10 @@ export default function IpCheck() {
           <ToolCard>
             <div className="p-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex size-8 items-center justify-center rounded-lg" style={{ background: 'var(--orange-dim)', border: '1px solid var(--orange-border)' }}>
-                  <MapPin className="size-4 text-orange-500" />
+                <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--orange-dim)] border border-[var(--orange-border)]">
+                  <MapPin className="size-4 text-[var(--orange)]" />
                 </div>
-                <h3 className="font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>Location</h3>
+                <h3 className="font-bold text-[var(--text-primary)]" style={{ fontFamily: 'Syne, sans-serif' }}>Location</h3>
               </div>
               <div className="space-y-2">
                 <InfoRow label="Country" value={`${data.location.country} (${data.location.countryCode})`} copyId="country" copiedId={copiedId} onCopy={handleCopy} />
@@ -194,10 +177,10 @@ export default function IpCheck() {
           <ToolCard>
             <div className="p-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex size-8 items-center justify-center rounded-lg" style={{ background: 'var(--orange-dim)', border: '1px solid var(--orange-border)' }}>
-                  <Network className="size-4 text-orange-500" />
+                <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--orange-dim)] border border-[var(--orange-border)]">
+                  <Network className="size-4 text-[var(--orange)]" />
                 </div>
-                <h3 className="font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>Network</h3>
+                <h3 className="font-bold text-[var(--text-primary)]" style={{ fontFamily: 'Syne, sans-serif' }}>Network</h3>
               </div>
               <div className="space-y-2">
                 <InfoRow label="ISP" value={data.network.isp} copyId="isp" copiedId={copiedId} onCopy={handleCopy} />
@@ -212,11 +195,11 @@ export default function IpCheck() {
           <ToolCard className="md:col-span-2">
             <div className="p-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex size-8 items-center justify-center rounded-lg" style={{ background: 'var(--orange-dim)', border: '1px solid var(--orange-border)' }}>
-                  <Shield className="size-4 text-orange-500" />
+                <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--orange-dim)] border border-[var(--orange-border)]">
+                  <Shield className="size-4 text-[var(--orange)]" />
                 </div>
-                <h3 className="font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>Security Flags</h3>
-                <span className="ml-auto badge-mono px-2 py-0.5 rounded" style={{ background: 'var(--surface-raised)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+                <h3 className="font-bold text-[var(--text-primary)]" style={{ fontFamily: 'Syne, sans-serif' }}>Security Flags</h3>
+                <span className="ml-auto badge-mono px-2 py-0.5 rounded bg-[var(--surface-raised)] border border-[var(--border)] text-[var(--text-muted)]">
                   {data.security.type}
                 </span>
               </div>

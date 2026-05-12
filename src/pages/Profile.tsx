@@ -107,9 +107,9 @@ export default function Profile() {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto py-12 md:py-16 flex flex-col items-center">
-        <div className="size-28 bg-zinc-200 dark:bg-zinc-800 rounded-full mb-6 animate-pulse"></div>
-        <div className="h-8 w-48 bg-zinc-200 dark:bg-zinc-800 rounded-lg mb-4 animate-pulse"></div>
-        <div className="h-4 w-32 bg-zinc-200 dark:bg-zinc-800 rounded-lg animate-pulse"></div>
+        <div className="size-28 bg-[var(--surface-raised)] rounded-full mb-6 animate-pulse border border-[var(--border)]"></div>
+        <div className="h-8 w-48 bg-[var(--surface-raised)] rounded-lg mb-4 animate-pulse border border-[var(--border)]"></div>
+        <div className="h-4 w-32 bg-[var(--surface-raised)] rounded-lg animate-pulse border border-[var(--border)]"></div>
       </div>
     );
   }
@@ -117,11 +117,11 @@ export default function Profile() {
   if (error || !profile) {
     return (
       <div className="max-w-4xl mx-auto py-16 px-4">
-        <div className="flex flex-col items-center justify-center p-12 bg-white dark:bg-[#0a0a0a] border border-zinc-200 dark:border-zinc-800 border-dashed rounded-3xl text-center text-zinc-500 shadow-sm">
+        <div className="flex flex-col items-center justify-center p-12 glass border-dashed rounded-3xl text-center text-[var(--text-secondary)] shadow-sm">
           <User className="size-16 mx-auto mb-4 opacity-20" />
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">Identity Unresolved</h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Identity Unresolved</h2>
           <p className="text-sm">The target node is non-existent within the active registry.</p>
-          <Link to="/" className="mt-6 px-6 py-2.5 bg-zinc-900 hover:bg-orange-500 text-white rounded-xl font-bold transition-colors">Abort Execution</Link>
+          <Link to="/" className="mt-6 px-6 py-2.5 bg-[var(--text-primary)] hover:bg-[var(--orange)] text-[var(--bg)] rounded-xl font-bold transition-colors">Abort Execution</Link>
         </div>
       </div>
     );
@@ -129,7 +129,7 @@ export default function Profile() {
 
   const roleColor = profile.user.role === 'admin' ? 'text-red-500 border-red-500/20 bg-red-500/10' : 
                     profile.user.role === 'moderator' ? 'text-emerald-500 border-emerald-500/20 bg-emerald-500/10' : 
-                    'text-zinc-500 border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800';
+                    'text-[var(--text-secondary)] border-[var(--border)] bg-[var(--surface-raised)]';
 
   return (
     <div className="max-w-4xl mx-auto md:py-8 animation-fade-in">
@@ -141,13 +141,13 @@ export default function Profile() {
         </div>
       )}
 
-      <div className={`bg-white dark:bg-zinc-900 border ${profile.user.isVip ? 'border-orange-500/50 shadow-orange-500/10' : 'border-zinc-200 dark:border-zinc-800'} rounded-3xl p-8 md:p-12 shadow-xl mb-8 relative overflow-hidden transition-all`}>
-        <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${profile.user.isVip ? 'from-amber-400 via-orange-500 to-amber-400 animate-gradient-x' : 'from-zinc-500 to-zinc-400'}`}></div>
+      <div className={`glass ${profile.user.isVip ? 'border-[var(--orange-border)] shadow-orange-500/10' : 'border-[var(--border)]'} rounded-3xl p-8 md:p-12 shadow-xl mb-8 relative overflow-hidden transition-all`}>
+        <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${profile.user.isVip ? 'from-[var(--orange-dim)] via-[var(--orange)] to-[var(--orange-dim)] animate-gradient-x' : 'from-[var(--border-strong)] to-[var(--border)]'}`}></div>
         
         <div className="absolute top-4 right-4 md:top-6 md:right-6 flex gap-2">
            <button 
              onClick={handleCopyVector}
-             className="p-2.5 bg-zinc-50 hover:bg-zinc-100 dark:bg-[#0a0a0a] dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-orange-500 rounded-xl transition-all shadow-sm"
+             className="p-2.5 bg-[var(--surface)] hover:bg-[var(--surface-raised)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--orange)] rounded-xl transition-all shadow-sm"
              title="Clone Routing Signature"
            >
              {isCopied ? <CheckCircle2 className="size-4 text-emerald-500" /> : <Share2 className="size-4" />}
@@ -156,11 +156,11 @@ export default function Profile() {
         
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10">
           <div className="relative group shrink-0">
-            <div className={`size-28 md:size-32 rounded-full flex items-center justify-center border-4 shadow-xl overflow-hidden ${profile.user.isVip ? 'bg-orange-500/10 border-orange-500/20 ring-2 ring-orange-500/50' : 'bg-zinc-100 border-zinc-50 dark:bg-zinc-800 dark:border-[#0a0a0a] ring-1 ring-zinc-200 dark:ring-zinc-800'}`}>
+            <div className={`size-28 md:size-32 rounded-full flex items-center justify-center border-4 shadow-xl overflow-hidden ${profile.user.isVip ? 'bg-[var(--orange-dim)] border-[var(--orange-border)] ring-2 ring-[var(--orange-border)]' : 'bg-[var(--surface)] border-[var(--border)] ring-1 ring-[var(--border)]'}`}>
               {profile.user.avatarUrl ? (
                 <img src={profile.user.avatarUrl} alt="Visual Signature" className="w-full h-full object-cover" />
               ) : (
-                <User className={`size-12 ${profile.user.isVip ? 'text-orange-500' : 'text-zinc-400 dark:text-zinc-600'}`} />
+                <User className={`size-12 ${profile.user.isVip ? 'text-[var(--orange)]' : 'text-[var(--text-muted)]'}`} />
               )}
             </div>
             
@@ -178,19 +178,19 @@ export default function Profile() {
           
           <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-3">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight">{profile.user.username}</h1>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight" style={{ fontFamily: 'Syne, sans-serif' }}>{profile.user.username}</h1>
               <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border ${roleColor} flex items-center gap-1`}>
                 <Shield className="size-3" /> {profile.user.role}
               </span>
               {profile.user.isVip && (
-                 <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-orange-500/30 bg-orange-500/10 text-orange-500 flex items-center gap-1 shadow-sm shadow-orange-500/10">
+                 <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border border-[var(--orange-border)] bg-[var(--orange-dim)] text-[var(--orange)] flex items-center gap-1 shadow-sm shadow-[var(--orange-dim)]">
                    <Crown className="size-3" /> Elite Status
                  </span>
               )}
             </div>
             
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs font-mono text-zinc-500 uppercase tracking-wider mb-6">
-              <span className="flex items-center gap-1.5 bg-zinc-50 dark:bg-[#0a0a0a] px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800"><Calendar className="size-3.5" /> Initialize: {new Date(profile.user.createdAt).toLocaleDateString()}</span>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs font-mono text-[var(--text-secondary)] uppercase tracking-wider mb-6">
+              <span className="flex items-center gap-1.5 bg-[var(--surface-raised)] px-3 py-1.5 rounded-lg border border-[var(--border)]"><Calendar className="size-3.5" /> Initialize: {new Date(profile.user.createdAt).toLocaleDateString()}</span>
               {profile.user.isVerified && <span className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-3 py-1.5 rounded-lg border border-emerald-500/20"><CheckCircle2 className="size-3.5" /> Validated</span>}
             </div>
 
@@ -198,7 +198,7 @@ export default function Profile() {
               <button 
                 onClick={initializeCommLink}
                 disabled={isConnecting}
-                className="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-orange-500 text-white dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-orange-500 dark:hover:text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-md active:scale-95 disabled:opacity-50"
+                className="flex items-center justify-center gap-2 bg-[var(--text-primary)] hover:bg-[var(--orange)] text-[var(--bg)] hover:text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-md active:scale-95 disabled:opacity-50"
               >
                 {isConnecting ? <Loader2 className="size-4 animate-spin" /> : <Network className="size-4" />}
                 {isConnecting ? 'Routing...' : 'Initialize Secure Comm-Link'}
@@ -207,59 +207,59 @@ export default function Profile() {
           </div>
         </div>
         
-        <div className="grid grid-cols-3 gap-4 w-full border-t border-zinc-100 dark:border-zinc-800/80 pt-8 mt-8">
-          <div className="flex flex-col items-center justify-center p-4 bg-zinc-50 dark:bg-[#0a0a0a] rounded-2xl border border-zinc-100 dark:border-zinc-800/50 shadow-inner">
-            <span className="text-2xl md:text-3xl font-black text-orange-500 font-mono">{profile.user.points}</span>
-            <span className="text-[10px] md:text-xs text-zinc-500 uppercase tracking-widest font-bold flex items-center gap-1.5 mt-1">
+        <div className="grid grid-cols-3 gap-4 w-full border-t border-[var(--border-strong)] pt-8 mt-8">
+          <div className="flex flex-col items-center justify-center p-4 bg-[var(--surface)] rounded-2xl border border-[var(--border)] shadow-inner">
+            <span className="text-2xl md:text-3xl font-black text-[var(--orange)] font-mono">{profile.user.points}</span>
+            <span className="text-[10px] md:text-xs text-[var(--text-muted)] uppercase tracking-widest font-bold flex items-center gap-1.5 mt-1">
               <Flame className="size-3.5 hidden sm:block" /> Reputation
             </span>
           </div>
-          <div className="flex flex-col items-center justify-center p-4 bg-zinc-50 dark:bg-[#0a0a0a] rounded-2xl border border-zinc-100 dark:border-zinc-800/50 shadow-inner">
-            <span className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white font-mono">{profile.stats.threads}</span>
-            <span className="text-[10px] md:text-xs text-zinc-500 uppercase tracking-widest font-bold flex items-center gap-1.5 mt-1">
+          <div className="flex flex-col items-center justify-center p-4 bg-[var(--surface)] rounded-2xl border border-[var(--border)] shadow-inner">
+            <span className="text-2xl md:text-3xl font-black text-[var(--text-primary)] font-mono">{profile.stats.threads}</span>
+            <span className="text-[10px] md:text-xs text-[var(--text-muted)] uppercase tracking-widest font-bold flex items-center gap-1.5 mt-1">
               <MessageSquarePlus className="size-3.5 hidden sm:block" /> Origin Vectors
             </span>
           </div>
-          <div className="flex flex-col items-center justify-center p-4 bg-zinc-50 dark:bg-[#0a0a0a] rounded-2xl border border-zinc-100 dark:border-zinc-800/50 shadow-inner">
-            <span className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white font-mono">{profile.stats.replies}</span>
-            <span className="text-[10px] md:text-xs text-zinc-500 uppercase tracking-widest font-bold flex items-center gap-1.5 mt-1">
+          <div className="flex flex-col items-center justify-center p-4 bg-[var(--surface)] rounded-2xl border border-[var(--border)] shadow-inner">
+            <span className="text-2xl md:text-3xl font-black text-[var(--text-primary)] font-mono">{profile.stats.replies}</span>
+            <span className="text-[10px] md:text-xs text-[var(--text-muted)] uppercase tracking-widest font-bold flex items-center gap-1.5 mt-1">
               <MessageCircle className="size-3.5 hidden sm:block" /> Transmissions
             </span>
           </div>
         </div>
       </div>
 
-      <h3 className="font-extrabold text-xl md:text-2xl mb-6 flex items-center gap-3 text-zinc-900 dark:text-white px-2">
-        <Network className="size-6 text-orange-500" /> Network Activity
+      <h3 className="font-extrabold text-xl md:text-2xl mb-6 flex items-center gap-3 text-[var(--text-primary)] px-2" style={{ fontFamily: 'Syne, sans-serif' }}>
+        <Network className="size-6 text-[var(--orange)]" /> Network Activity
       </h3>
       
       <div className="space-y-4 mb-12">
         {profile.recentThreads.length === 0 ? (
-           <div className="p-12 text-center bg-white/50 dark:bg-[#0a0a0a]/50 border border-zinc-200 dark:border-zinc-800 rounded-3xl text-zinc-500 border-dashed shadow-sm">
+           <div className="p-12 text-center bg-[var(--surface-raised)] border border-[var(--border)] rounded-3xl text-[var(--text-secondary)] border-dashed shadow-sm">
              <Network className="size-10 mx-auto mb-3 opacity-20" />
-             <p className="font-semibold text-zinc-600 dark:text-zinc-400">Zero active transmissions traced.</p>
+             <p className="font-semibold text-[var(--text-muted)]">Zero active transmissions traced.</p>
            </div>
         ) : (
           profile.recentThreads.map(thread => (
             <Link 
               key={thread.id} 
               to={`/forum/${thread.id}`} 
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-orange-500/50 hover:shadow-md transition-all group shadow-sm"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 glass card-interactive hover:border-[var(--orange-border)] hover:shadow-md transition-all group shadow-sm"
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
-                  <span className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-zinc-200 dark:border-zinc-700">
+                  <span className="px-2.5 py-1 bg-[var(--surface)] text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-wider rounded-md border border-[var(--border)]">
                     {thread.category}
                   </span>
-                  <span className="text-[11px] font-mono text-zinc-500">
+                  <span className="text-[11px] font-mono text-[var(--text-muted)]">
                     Deployed: {new Date(thread.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <h4 className="font-bold text-lg text-zinc-900 dark:text-zinc-100 group-hover:text-orange-500 transition-colors leading-snug">
+                <h4 className="font-bold text-lg text-[var(--text-primary)] group-hover:text-[var(--orange)] transition-colors leading-snug">
                   {thread.title}
                 </h4>
               </div>
-              <div className="flex items-center gap-2 text-orange-500 font-bold text-sm bg-orange-500/10 px-4 py-2 rounded-xl border border-orange-500/20 shrink-0 w-fit">
+              <div className="flex items-center gap-2 text-[var(--orange)] font-bold text-sm bg-[var(--orange-dim)] px-4 py-2 rounded-xl border border-[var(--orange-border)] shrink-0 w-fit">
                 <Flame className="size-4" /> {thread.upvotes}
               </div>
             </Link>

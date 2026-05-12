@@ -330,7 +330,7 @@ export default function BinChecker() {
             fontFamily: "'Courier New', monospace",
           }}>
             <span style={{ color: "#e2e8f0" }}>BIN</span>
-            <span style={{ color: "#1d4ed8" }}>.</span>
+            <span style={{ color: "#ff6b2b" }}>.</span>
             <span style={{ color: "#64748b" }}>LOOKUP</span>
           </h1>
           <p style={{ color: "#4b5563", fontSize: 13, letterSpacing: "0.05em", maxWidth: 480 }}>
@@ -349,7 +349,7 @@ export default function BinChecker() {
               borderRadius: 4, border: "none", cursor: "pointer",
               fontFamily: "monospace", fontSize: 11, letterSpacing: "0.12em",
               fontWeight: 700, textTransform: "uppercase",
-              background: mode === m ? "#1d4ed8" : "transparent",
+              background: mode === m ? "#ff6b2b" : "transparent",
               color: mode === m ? "#fff" : "#4b5563",
               transition: "all 0.15s",
             }}>
@@ -386,7 +386,7 @@ export default function BinChecker() {
                 disabled={!extractText.trim()}
                 style={{
                   flex: 1, padding: "10px 0",
-                  background: "#1d4ed8", color: "#fff",
+                  background: "#ff6b2b", color: "#fff",
                   border: "none", borderRadius: 4, cursor: "pointer",
                   fontFamily: "monospace", fontSize: 11, fontWeight: 700,
                   letterSpacing: "0.12em", opacity: extractText.trim() ? 1 : 0.4,
@@ -446,13 +446,13 @@ export default function BinChecker() {
                 disabled={isChecking || !input.trim()}
                 style={{
                   flex: 1, padding: "11px 0",
-                  background: isChecking ? "#1e3a8a" : "#1d4ed8",
+                  background: isChecking ? "#9a3412" : "#ff6b2b",
                   color: "#fff", border: "none", borderRadius: 4,
                   cursor: isChecking || !input.trim() ? "not-allowed" : "pointer",
                   fontFamily: "monospace", fontSize: 11, fontWeight: 700,
                   letterSpacing: "0.15em",
                   opacity: !input.trim() && !isChecking ? 0.4 : 1,
-                  boxShadow: isChecking ? "none" : "0 0 20px #1d4ed840",
+                  boxShadow: isChecking ? "none" : "0 0 20px #ff6b2b40",
                   transition: "all 0.2s",
                 }}
               >
@@ -478,16 +478,16 @@ export default function BinChecker() {
                 <div style={{ height: 2, background: "#1f2937", borderRadius: 1, overflow: "hidden" }}>
                   <div style={{
                     height: "100%", width: `${pct}%`,
-                    background: "linear-gradient(90deg, #1d4ed8, #3b82f6)",
+                    background: "linear-gradient(90deg, #ff6b2b, #fb923c)",
                     transition: "width 0.3s",
-                    boxShadow: "0 0 8px #3b82f680",
+                    boxShadow: "0 0 8px #fb923c80",
                   }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
                   <span style={{ fontFamily: "monospace", fontSize: 10, color: "#374151" }}>
                     {progress.current} of {progress.total} processed
                   </span>
-                  <span style={{ fontFamily: "monospace", fontSize: 10, color: "#3b82f6" }}>{pct}%</span>
+                  <span style={{ fontFamily: "monospace", fontSize: 10, color: "#fb923c" }}>{pct}%</span>
                 </div>
               </div>
             )}

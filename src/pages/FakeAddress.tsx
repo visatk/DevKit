@@ -115,12 +115,12 @@ const InteractiveDataField = ({ label, value, mono = false }: { label: string, v
       className="group relative p-3 -mx-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-all cursor-pointer border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700/50"
       title={`Copy ${label}`}
     >
-      <label className="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1 cursor-pointer">{label}</label>
+      <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1 cursor-pointer">{label}</label>
       <div className="flex items-start justify-between gap-4">
-        <div className={`text-sm font-medium text-zinc-900 dark:text-zinc-100 break-all transition-colors group-hover:text-orange-600 dark:group-hover:text-orange-400 ${mono ? 'font-mono text-[13px] bg-zinc-200/50 dark:bg-black/50 px-2 py-0.5 rounded border border-zinc-300/50 dark:border-zinc-800' : ''}`}>
+        <div className={`text-sm font-medium text-[var(--text-primary)] break-all transition-colors group-hover:text-[var(--orange)] ${mono ? 'font-mono text-[13px] bg-[var(--surface-raised)] px-2 py-0.5 rounded border border-[var(--border-strong)]' : ''}`}>
           {value}
         </div>
-        <div className="shrink-0 text-zinc-400 group-hover:text-orange-500 transition-colors">
+        <div className="shrink-0 text-[var(--text-muted)] group-hover:text-[var(--orange)] transition-colors">
           {copied ? <Check className="size-4 text-emerald-500 scale-110 transition-transform" /> : <Copy className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
         </div>
       </div>
@@ -259,13 +259,13 @@ export default function FakeAddress() {
                   <Link 
                     key={loc.slug} 
                     to={`/fake-address/${loc.slug}`}
-                    className="flex items-center justify-between p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/5 transition-all group"
+                    className="flex items-center justify-between p-4 glass card-interactive hover:border-[var(--orange-border)] hover:shadow-lg hover:shadow-orange-500/10 group"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-2xl filter drop-shadow-sm">{loc.flag}</span>
-                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-orange-500 transition-colors truncate">{loc.name}</span>
+                      <span className="font-semibold text-[var(--text-primary)] group-hover:text-[var(--orange)] transition-colors truncate">{loc.name}</span>
                     </div>
-                    <ChevronRight className="size-4 text-zinc-300 dark:text-zinc-700 group-hover:text-orange-500 transition-colors shrink-0" />
+                    <ChevronRight className="size-4 text-[var(--text-muted)] group-hover:text-[var(--orange)] transition-colors shrink-0" />
                   </Link>
                 ))}
               </div>
@@ -304,11 +304,11 @@ export default function FakeAddress() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900/80 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-xl shadow-zinc-200/20 dark:shadow-black/20 p-6 md:p-10 mb-16 relative overflow-hidden">
+      <div className="glass shadow-2xl shadow-[var(--orange-dim)] rounded-3xl p-6 md:p-10 mb-16 relative overflow-hidden">
         
         {isGenerating && identity && (
-          <div className="absolute inset-0 z-10 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center rounded-3xl transition-all">
-            <Loader2 className="size-10 text-orange-500 animate-spin" />
+          <div className="absolute inset-0 z-10 bg-[var(--surface-raised)] backdrop-blur-sm flex items-center justify-center rounded-3xl transition-all">
+            <Loader2 className="size-10 text-[var(--orange)] animate-spin" />
           </div>
         )}
 
@@ -316,10 +316,10 @@ export default function FakeAddress() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
             
             {/* Column 1: Personal Data */}
-            <div className="bg-zinc-50 dark:bg-[#0a0a0a] rounded-2xl p-6 border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm flex flex-col">
+            <div className="bg-[var(--surface-raised)] rounded-2xl p-6 border border-[var(--border-strong)] shadow-sm flex flex-col">
               <SectionTitle icon={UserSquare2} title="Personal Profile" />
               <div className="flex items-center gap-4 mb-5 p-3 -mx-3 rounded-xl">
-                <img src={identity.avatar} alt="Avatar" className="size-14 rounded-full bg-zinc-200 dark:bg-zinc-800 object-cover shadow-sm ring-2 ring-white dark:ring-zinc-900" />
+                <img src={identity.avatar} alt="Avatar" className="size-14 rounded-full bg-[var(--surface)] object-cover shadow-sm ring-2 ring-[var(--border-strong)]" />
                 <div className="flex-1">
                   <InteractiveDataField label="Full Name" value={identity.fullName} />
                 </div>
@@ -396,46 +396,46 @@ export default function FakeAddress() {
 
           </div>
         ) : (
-          <div className="h-64 flex flex-col items-center justify-center bg-zinc-50 dark:bg-[#0a0a0a] rounded-2xl border border-zinc-200 dark:border-zinc-800 border-dashed mb-8 transition-colors">
+          <div className="h-64 flex flex-col items-center justify-center bg-[var(--surface-raised)] rounded-2xl border border-[var(--border-strong)] border-dashed mb-8 transition-colors">
             {isGenerating ? (
-              <Loader2 className="size-10 text-orange-500 animate-spin mb-4" />
+              <Loader2 className="size-10 text-[var(--orange)] animate-spin mb-4" />
             ) : (
               <span className="text-6xl filter drop-shadow-sm mb-4 grayscale opacity-50">{activeLocaleData?.flag}</span>
             )}
-            <p className="text-zinc-500 font-medium">{isGenerating ? 'Synthesizing Architecture...' : 'Awaiting System Initialization...'}</p>
+            <p className="text-[var(--text-secondary)] font-medium">{isGenerating ? 'Synthesizing Architecture...' : 'Awaiting System Initialization...'}</p>
           </div>
         )}
         
-        <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-          <button onClick={generateIdentity} disabled={isGenerating} className="flex-1 flex items-center justify-center gap-2 px-8 py-4 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-base font-bold rounded-2xl hover:bg-orange-500 dark:hover:bg-orange-500 dark:hover:text-white transition-all shadow-md active:scale-[0.98] cursor-pointer disabled:opacity-70">
+        <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-[var(--border-strong)]">
+          <button onClick={generateIdentity} disabled={isGenerating} className="flex-1 flex items-center justify-center gap-2 px-8 py-4 bg-[var(--text-primary)] text-[var(--bg)] text-base font-bold rounded-2xl hover:bg-[var(--orange)] hover:text-white transition-all shadow-md active:scale-[0.98] cursor-pointer disabled:opacity-70">
             <RefreshCw className={`size-5 ${isGenerating ? 'animate-spin' : ''}`} />
             {isGenerating ? 'Regenerating...' : 'Regenerate Footprint'}
           </button>
-          <button onClick={() => copy(formattedOutput)} disabled={!identity || isGenerating} className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 text-base font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] ${copiedText ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-white dark:bg-[#0a0a0a] text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm'}`}>
+          <button onClick={() => copy(formattedOutput)} disabled={!identity || isGenerating} className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 text-base font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] ${copiedText ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-[var(--surface-raised)] text-[var(--text-primary)] border border-[var(--border-strong)] hover:border-[var(--orange-border)] shadow-sm'}`}>
             {copiedText ? <Check className="size-5" /> : <Copy className="size-5" />}
             {copiedText ? 'Copied Successfully' : 'Copy Full'}
           </button>
         </div>
       </div>
 
-      <article className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 md:p-12 shadow-sm">
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6">Why Use a Localized Identity Generator?</h2>
+      <article className="glass rounded-3xl p-8 md:p-12 shadow-sm">
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>Why Use a Localized Identity Generator?</h2>
         
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           <div className="space-y-3">
-            <div className="size-10 bg-orange-500/10 rounded-lg flex items-center justify-center text-orange-500 border border-orange-500/20 mb-4"><Database className="size-5" /></div>
-            <h3 className="font-bold text-lg">Database Seeding</h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Instantly populate pre-production databases with localized records. Ensures that pagination, sorting, and regional search algorithms can be tested comprehensively before launch.</p>
+            <div className="size-10 bg-[var(--orange-dim)] rounded-lg flex items-center justify-center text-[var(--orange)] border border-[var(--orange-border)] mb-4"><Database className="size-5" /></div>
+            <h3 className="font-bold text-lg text-[var(--text-primary)]">Database Seeding</h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">Instantly populate pre-production databases with localized records. Ensures that pagination, sorting, and regional search algorithms can be tested comprehensively before launch.</p>
           </div>
           <div className="space-y-3">
             <div className="size-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-500 border border-blue-500/20 mb-4"><FileCode2 className="size-5" /></div>
-            <h3 className="font-bold text-lg">Strict Form Validation</h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">QA teams require accurately formatted edge-case addresses to stress-test UI inputs. Generate complex international postal codes and distinct regional phone formatting patterns securely.</p>
+            <h3 className="font-bold text-lg text-[var(--text-primary)]">Strict Form Validation</h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">QA teams require accurately formatted edge-case addresses to stress-test UI inputs. Generate complex international postal codes and distinct regional phone formatting patterns securely.</p>
           </div>
           <div className="space-y-3">
             <div className="size-10 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-500 border border-emerald-500/20 mb-4"><Shield className="size-5" /></div>
-            <h3 className="font-bold text-lg">Maintain Compliance</h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Prevent data leaks and GDPR violations. By utilizing synthesized mock identities, guarantee that no real PII (Personally Identifiable Information) enters non-production environments.</p>
+            <h3 className="font-bold text-lg text-[var(--text-primary)]">Maintain Compliance</h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">Prevent data leaks and GDPR violations. By utilizing synthesized mock identities, guarantee that no real PII (Personally Identifiable Information) enters non-production environments.</p>
           </div>
         </div>
       </article>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
-  Home, MessagesSquare, Users, Settings, 
-  CreditCard, ShieldCheck, Cpu, Database
+  Terminal, Home, MessagesSquare, Users, Settings, 
+  CreditCard, ShieldCheck, Cpu, Database, ChevronLeft
 } from 'lucide-react';
 import { Logo } from '../Logo';
 
@@ -31,31 +31,34 @@ const navGroups = [
   }
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
 
   return (
     <aside 
       className={`
-        hidden lg:flex flex-col w-72 h-[100dvh] 
-        bg-zinc-950/80 backdrop-blur-xl border-r border-zinc-800/50
-        transition-transform duration-300 ease-in-out z-40
+        fixed lg:static inset-y-0 left-0 z-40 
+        w-72 glass flex flex-col
+        transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}
-      aria-label="Main Navigation"
     >
       {/* Sidebar Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-800/50 shrink-0">
-        <div className="flex items-center gap-3">
-          <Logo className="h-8" />
-          <span className="font-bold text-lg tracking-tight text-zinc-50">DevKit</span>
-        </div>
+      <div className="h-16 flex items-center justify-between px-6 border-b border-[var(--border)]">
+        <Logo className="h-8" />
+        <button 
+          onClick={() => setIsOpen(false)}
+          className="lg:hidden p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded-lg hover:bg-[var(--surface-raised)] transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-8 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8 scrollbar-hide">
         {navGroups.map((group, idx) => (
           <div key={idx}>
-            <h3 className="px-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            <h3 className="px-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">
               {group.title}
             </h3>
             <div className="space-y-1">
@@ -67,44 +70,45 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                   <NavLink
                     key={link.name}
                     to={link.path}
-                    aria-current={isActive ? 'page' : undefined}
+                    onClick={() => setIsOpen(false)}
                     className={`
-                      group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+                      group flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
                       ${isActive 
-                        ? 'bg-indigo-500/10 text-indigo-400' 
-                        : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100'
+                        ? 'bg-[var(--orange-dim)] text-[var(--orange)]' 
+                        : 'text-[var(--text-secondary)] hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]'
                       }
                     `}
                   >
-                    <div className="relative flex items-center justify-center">
+                    <div className="flex items-center gap-3 relative">
+                      {/* Active Indicator Line */}
                       {isActive && (
-                        <div className="absolute -left-6 w-1 h-6 bg-indigo-500 rounded-r-full shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+                        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1 h-6 bg-[var(--orange)] rounded-r-full shadow-[0_0_10px_var(--orange)]" />
                       )}
-                      <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-indigo-400' : 'text-zinc-500 group-hover:text-zinc-300'}`} />
+                      <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-[var(--orange)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'}`} />
+                      {link.name}
                     </div>
-                    {link.name}
                   </NavLink>
                 );
               })}
             </div>
           </div>
         ))}
-      </nav>
+      </div>
 
       {/* User Section / Bottom Actions */}
-      <div className="p-4 border-t border-zinc-800/50 shrink-0">
+      <div className="p-4 border-t border-[var(--border)]">
         <NavLink
           to="/profile"
-          className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800/50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[var(--surface-raised)] transition-colors"
         >
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-inner border border-white/10">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[var(--orange)] to-amber-500 flex items-center justify-center text-white font-bold text-sm shadow-inner border border-white/10">
             A
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-zinc-100 truncate">Admin User</p>
-            <p className="text-xs text-zinc-500 truncate">Pro Member</p>
+            <p className="text-sm font-medium text-[var(--text-primary)] truncate">Admin User</p>
+            <p className="text-xs text-[var(--text-muted)] truncate">Pro Member</p>
           </div>
-          <Settings className="w-4 h-4 text-zinc-500 hover:text-zinc-300 transition-colors" />
+          <Settings className="w-4 h-4 text-[var(--text-muted)] hover:text-[var(--text-primary)]" />
         </NavLink>
       </div>
     </aside>
