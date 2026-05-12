@@ -2,8 +2,7 @@ import React, { useEffect, useState, useCallback, memo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, User, Clock, MessageCircle, Send, Flame, Code, 
-  Pin, LockKeyhole, ShieldAlert, Eye, Crown, Shield, 
-  CheckCircle2, Loader2, Key, AlertTriangle, Terminal
+  Pin, LockKeyhole, ShieldAlert, Eye, Crown, Shield, Loader2, Key, Terminal
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
