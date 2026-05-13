@@ -51,9 +51,9 @@ const BRAND_SYMBOLS: Record<string, string> = { VISA: "◈", MASTERCARD: "◉", 
 
 function Scanline() {
   return (
-    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", opacity: 0.03 }}>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
       {Array.from({ length: 40 }).map((_, i) => (
-        <div key={i} style={{ height: 1, background: "#fff", marginBottom: 6 }} />
+        <div key={i} className="h-[1px] bg-white mb-1.5" />
       ))}
     </div>
   );
@@ -66,13 +66,15 @@ function StatusPip({ status }: { status: StatusType }) {
     Error: { color: "#f59e0b", label: "ERR", glow: "0 0 8px #f59e0b88" },
   }[status];
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-      <span style={{
-        width: 7, height: 7, borderRadius: "50%",
-        background: cfg.color, boxShadow: cfg.glow,
-        display: "inline-block", flexShrink: 0
-      }} />
-      <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.15em", color: cfg.color, fontWeight: 700 }}>
+    <span className="inline-flex items-center gap-1.5">
+      <span 
+        className="w-1.5 h-1.5 sm:w-[7px] sm:h-[7px] rounded-full shrink-0" 
+        style={{ background: cfg.color, boxShadow: cfg.glow }} 
+      />
+      <span 
+        className="font-mono text-[9px] sm:text-[10px] tracking-[0.15em] font-bold" 
+        style={{ color: cfg.color }}
+      >
         {cfg.label}
       </span>
     </span>
@@ -83,12 +85,14 @@ function BrandChip({ brand }: { brand: string }) {
   const normalizedBrand = brand.toUpperCase();
   const cfg = BRAND_COLORS[normalizedBrand] || { color: "#6b7280", accent: "#9ca3af" };
   return (
-    <span style={{
-      fontFamily: "monospace", fontSize: 11, fontWeight: 700,
-      letterSpacing: "0.1em", padding: "2px 8px", borderRadius: 3,
-      background: `${cfg.color}22`, border: `1px solid ${cfg.color}55`,
-      color: cfg.accent,
-    }}>
+    <span 
+      className="font-mono text-[9px] sm:text-[11px] font-bold tracking-[0.1em] px-1.5 sm:px-2 py-0.5 rounded-[3px] truncate"
+      style={{
+        background: `${cfg.color}22`, 
+        border: `1px solid ${cfg.color}55`,
+        color: cfg.accent,
+      }}
+    >
       {BRAND_SYMBOLS[normalizedBrand] || "◻"} {normalizedBrand}
     </span>
   );
@@ -104,11 +108,10 @@ function FundingTag({ type }: { type: string }) {
   };
   const c = map[normalizedType] || "#9ca3af";
   return (
-    <span style={{
-      fontFamily: "monospace", fontSize: 10, fontWeight: 700,
-      letterSpacing: "0.12em", padding: "2px 6px", borderRadius: 2,
-      background: `${c}18`, border: `1px solid ${c}44`, color: c,
-    }}>
+    <span 
+      className="font-mono text-[8px] sm:text-[10px] font-bold tracking-[0.12em] px-1.5 sm:px-1.5 py-0.5 rounded-[2px]"
+      style={{ background: `${c}18`, border: `1px solid ${c}44`, color: c }}
+    >
       {normalizedType}
     </span>
   );
@@ -128,61 +131,40 @@ function ResultRow({ result, index, expanded, onToggle }: { result: ResultData; 
   ] : [];
 
   return (
-    <div style={{
-      border: "1px solid #1f2937",
-      borderRadius: 6,
-      overflow: "hidden",
-      background: "#0d1117",
-      transition: "border-color 0.2s",
-    }}
-      onMouseEnter={e => e.currentTarget.style.borderColor = "#374151"}
-      onMouseLeave={e => e.currentTarget.style.borderColor = "#1f2937"}
-    >
+    <div className="border border-[#1f2937] rounded-md overflow-hidden bg-[#0d1117] transition-colors duration-200 hover:border-[#374151]">
       <button
         onClick={onToggle}
-        style={{
-          width: "100%", display: "flex", alignItems: "center", gap: 12,
-          padding: "10px 16px", background: "none", border: "none",
-          cursor: "pointer", textAlign: "left",
-        }}
+        className="w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-2.5 px-3 sm:px-4 bg-transparent border-none cursor-pointer text-left"
       >
-        <span style={{ fontFamily: "monospace", fontSize: 11, color: "#4b5563", minWidth: 24, userSelect: "none" }}>
+        <span className="font-mono text-[10px] sm:text-[11px] text-[#4b5563] min-w-[20px] sm:min-w-[24px] select-none shrink-0">
           {String(index + 1).padStart(2, "0")}
         </span>
         <StatusPip status={status} />
-        <span style={{
-          fontFamily: "monospace", fontSize: 13, fontWeight: 700,
-          letterSpacing: "0.15em", color: "#e2e8f0", flex: 1,
-        }}>
+        <span className="font-mono text-xs sm:text-[13px] font-bold tracking-[0.15em] text-[#e2e8f0] flex-1 truncate">
           {raw}
         </span>
+        
         {data && (
-          <>
+          <div className="hidden sm:flex items-center gap-2 overflow-hidden flex-shrink">
             {data.brand && <BrandChip brand={data.brand} />}
             {data.funding && <FundingTag type={data.funding} />}
-            <span style={{ fontFamily: "monospace", fontSize: 10, color: "#6b7280" }}>{data.country}</span>
-          </>
+            <span className="font-mono text-[9px] sm:text-[10px] text-[#6b7280] hidden md:inline truncate">{data.country}</span>
+          </div>
         )}
-        <span style={{ fontFamily: "monospace", fontSize: 10, color: "#374151", marginLeft: "auto" }}>{time}ms</span>
+        
+        <span className="font-mono text-[9px] sm:text-[10px] text-[#374151] ml-auto shrink-0">{time}ms</span>
         {data && (
-          <svg width={12} height={12} viewBox="0 0 12 12" style={{ color: "#4b5563", transform: expanded ? "rotate(180deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>
+          <svg width={12} height={12} viewBox="0 0 12 12" className={`text-[#4b5563] shrink-0 ml-1 sm:ml-2 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}>
             <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth={1.5} fill="none" strokeLinecap="round" />
           </svg>
         )}
       </button>
       {expanded && data && (
-        <div style={{
-          borderTop: "1px solid #1f2937",
-          padding: "12px 16px",
-          background: "#080c10",
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 8,
-        }}>
+        <div className="border-t border-[#1f2937] p-3 sm:p-3 bg-[#080c10] grid grid-cols-2 md:grid-cols-4 gap-2">
           {gridFields.map(([k, v]) => (
-            <div key={String(k)} style={{ padding: "8px 10px", background: "#0d1117", border: "1px solid #1f2937", borderRadius: 4 }}>
-              <div style={{ fontFamily: "monospace", fontSize: 9, letterSpacing: "0.12em", color: "#4b5563", marginBottom: 4 }}>{String(k)}</div>
-              <div style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "#94a3b8" }}>{String(v) || "—"}</div>
+            <div key={String(k)} className="p-2 sm:p-2.5 bg-[#0d1117] border border-[#1f2937] rounded">
+              <div className="font-mono text-[8px] sm:text-[9px] tracking-[0.12em] text-[#4b5563] mb-1 truncate">{String(k)}</div>
+              <div className="font-mono text-[10px] sm:text-xs font-bold text-[#94a3b8] truncate">{String(v) || "—"}</div>
             </div>
           ))}
         </div>
@@ -276,7 +258,6 @@ export default function BinChecker() {
       
       setProgress(p => ({ ...p, current: i + 1 }));
       
-      // Throttle strictly to prevent Node/Edge exhaustion on bulk lookups
       await new Promise(r => setTimeout(r, 200)); 
     }
     setIsChecking(false);
@@ -315,85 +296,60 @@ export default function BinChecker() {
   ];
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#060810",
-      color: "#e2e8f0",
-      fontFamily: "'Courier New', Courier, monospace",
-      position: "relative",
-      overflow: "hidden",
-    }}>
+    <div className="min-h-screen bg-[#060810] text-[#e2e8f0] font-mono relative overflow-hidden">
       <Scanline />
 
-      <div style={{
-        position: "fixed", inset: 0, pointerEvents: "none",
+      <div className="fixed inset-0 pointer-events-none" style={{
         backgroundImage: "linear-gradient(#1f293710 1px, transparent 1px), linear-gradient(90deg, #1f293710 1px, transparent 1px)",
         backgroundSize: "40px 40px",
       }} />
 
-      <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 20px", position: "relative" }}>
+      <div className="w-full max-w-[960px] mx-auto px-4 sm:px-5 py-6 sm:py-8 relative">
 
-        <div style={{ marginBottom: 40 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{
-                fontFamily: "monospace", fontSize: 10, letterSpacing: "0.2em",
-                color: "#10b981", padding: "3px 8px",
-                border: "1px solid #10b98155", borderRadius: 2,
-              }}>
+        {/* ─── Header Section ─── */}
+        <div className="mb-8 sm:mb-10">
+          <div className="flex flex-wrap items-center justify-between mb-3 gap-2">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <span className="font-mono text-[8px] sm:text-[10px] tracking-[0.2em] text-[#10b981] px-1.5 sm:px-2 py-0.5 border border-[#10b98155] rounded-[2px]">
                 SYS:ONLINE
               </span>
-              <span style={{ fontSize: 10, color: "#374151", letterSpacing: "0.15em" }}>
+              <span className="text-[8px] sm:text-[10px] text-[#374151] tracking-[0.15em] truncate max-w-[120px] sm:max-w-none">
                 v2.1.0 · BIN INTELLIGENCE ENGINE
               </span>
             </div>
-            <span style={{ fontFamily: "monospace", fontSize: 11, color: "#374151", letterSpacing: "0.1em" }}>
+            <span className="font-mono text-[9px] sm:text-[11px] text-[#374151] tracking-[0.1em]">
               {timeStr}
             </span>
           </div>
 
-          <h1 style={{
-            fontSize: "clamp(28px, 5vw, 48px)",
-            fontWeight: 900,
-            letterSpacing: "-0.02em",
-            lineHeight: 1,
-            marginBottom: 10,
-            fontFamily: "'Courier New', monospace",
-          }}>
-            <span style={{ color: "#e2e8f0" }}>BIN</span>
-            <span style={{ color: "#ff6b2b" }}>.</span>
-            <span style={{ color: "#64748b" }}>LOOKUP</span>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tighter leading-none mb-2 font-mono">
+            <span className="text-[#e2e8f0]">BIN</span>
+            <span className="text-[#ff6b2b]">.</span>
+            <span className="text-[#64748b]">LOOKUP</span>
           </h1>
-          <p style={{ color: "#4b5563", fontSize: 13, letterSpacing: "0.05em", maxWidth: 480 }}>
+          <p className="text-[#4b5563] text-xs sm:text-[13px] tracking-[0.05em] max-w-lg mt-2">
             Decode card brand, funding type, country, and issuer from BIN / IIN prefixes securely.
           </p>
         </div>
 
-        <div style={{
-          display: "inline-flex", background: "#0d1117",
-          border: "1px solid #1f2937", borderRadius: 6, padding: 3, marginBottom: 28,
-        }}>
+        {/* ─── Mode Toggles ─── */}
+        <div className="inline-flex bg-[#0d1117] border border-[#1f2937] rounded-md p-1 sm:p-[3px] mb-6 sm:mb-7">
           {["check", "extract"].map(m => (
-            <button key={m} onClick={() => setMode(m)} style={{
-              padding: "6px 20px",
-              borderRadius: 4, border: "none", cursor: "pointer",
-              fontFamily: "monospace", fontSize: 11, letterSpacing: "0.12em",
-              fontWeight: 700, textTransform: "uppercase",
-              background: mode === m ? "#ff6b2b" : "transparent",
-              color: mode === m ? "#fff" : "#4b5563",
-              transition: "all 0.15s",
-            }}>
+            <button key={m} onClick={() => setMode(m)} className={`
+              px-3 sm:px-5 py-1.5 sm:py-1.5 rounded-[4px] border-none cursor-pointer
+              font-mono text-[10px] sm:text-[11px] tracking-[0.12em] font-bold uppercase
+              transition-all duration-150
+              ${mode === m ? 'bg-[#ff6b2b] text-white' : 'bg-transparent text-[#4b5563]'}
+            `}>
               {m === "check" ? "◈ CHECK BINS" : "⌕ EXTRACT"}
             </button>
           ))}
         </div>
 
+        {/* ─── Mode: Extract ─── */}
         {mode === "extract" && (
-          <div style={{
-            background: "#0d1117", border: "1px solid #1f2937",
-            borderRadius: 8, padding: 24, marginBottom: 24,
-          }}>
-            <label style={{ fontSize: 10, letterSpacing: "0.2em", color: "#4b5563", display: "block", marginBottom: 10 }}>
+          <div className="bg-[#0d1117] border border-[#1f2937] rounded-lg p-4 sm:p-6 mb-6">
+            <label className="text-[9px] sm:text-[10px] tracking-[0.2em] text-[#4b5563] block mb-2 sm:mb-2.5">
               PASTE RAW DATA / LOGS CONTAINING BINs
             </label>
             <textarea
@@ -401,36 +357,19 @@ export default function BinChecker() {
               value={extractText}
               onChange={e => setExtractText(e.target.value)}
               placeholder={"card=4242420000000000 exp=12/26 cvv=123\nbin:555555 status:active"}
-              style={{
-                width: "100%", boxSizing: "border-box",
-                background: "#060810", border: "1px solid #1f2937",
-                borderRadius: 4, color: "#94a3b8",
-                fontFamily: "monospace", fontSize: 12, lineHeight: 1.7,
-                padding: 14, resize: "vertical", outline: "none",
-              }}
+              className="w-full box-border bg-[#060810] border border-[#1f2937] rounded text-[#94a3b8] font-mono text-[11px] sm:text-xs leading-[1.7] p-3 sm:p-3.5 resize-y outline-none focus:border-[#4b5563] transition-colors"
             />
-            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <div className="flex gap-2 sm:gap-2 mt-3">
               <button
                 onClick={handleExtract}
                 disabled={!extractText.trim()}
-                style={{
-                  flex: 1, padding: "10px 0",
-                  background: "#ff6b2b", color: "#fff",
-                  border: "none", borderRadius: 4, cursor: "pointer",
-                  fontFamily: "monospace", fontSize: 11, fontWeight: 700,
-                  letterSpacing: "0.12em", opacity: extractText.trim() ? 1 : 0.4,
-                }}
+                className={`flex-1 py-2.5 bg-[#ff6b2b] text-white border-none rounded cursor-pointer font-mono text-[10px] sm:text-[11px] font-bold tracking-[0.12em] ${extractText.trim() ? 'opacity-100' : 'opacity-40'}`}
               >
                 ⌕ EXTRACT VIA API
               </button>
               <button
                 onClick={() => setExtractText("")}
-                style={{
-                  padding: "10px 20px",
-                  background: "transparent", color: "#4b5563",
-                  border: "1px solid #1f2937", borderRadius: 4, cursor: "pointer",
-                  fontFamily: "monospace", fontSize: 11, letterSpacing: "0.1em",
-                }}
+                className="py-2.5 px-4 sm:px-5 bg-transparent text-[#4b5563] border border-[#1f2937] rounded cursor-pointer font-mono text-[10px] sm:text-[11px] tracking-[0.1em]"
               >
                 CLR
               </button>
@@ -438,17 +377,14 @@ export default function BinChecker() {
           </div>
         )}
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: 16, marginBottom: 24 }}>
-
-          <div style={{ background: "#0d1117", border: "1px solid #1f2937", borderRadius: 8, padding: 24 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <span style={{ fontSize: 10, letterSpacing: "0.2em", color: "#4b5563" }}>INPUT QUEUE</span>
+        {/* ─── Mode: Check / Grid Structure ─── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-4 sm:gap-4 mb-6">
+          
+          <div className="bg-[#0d1117] border border-[#1f2937] rounded-lg p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[9px] sm:text-[10px] tracking-[0.2em] text-[#4b5563]">INPUT QUEUE</span>
               {input && (
-                <button onClick={() => { setInput(""); setResults([]); }} style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  fontFamily: "monospace", fontSize: 10, color: "#374151",
-                  letterSpacing: "0.1em",
-                }}>
+                <button onClick={() => { setInput(""); setResults([]); }} className="bg-none border-none cursor-pointer font-mono text-[9px] sm:text-[10px] text-[#374151] tracking-[0.1em] hover:text-[#ef4444] transition-colors">
                   × CLEAR
                 </button>
               )}
@@ -458,89 +394,58 @@ export default function BinChecker() {
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder={"424242\n555555"}
-              style={{
-                width: "100%", boxSizing: "border-box",
-                background: "#060810", border: "1px solid #1f2937",
-                borderRadius: 4, color: "#10b981",
-                fontFamily: "monospace", fontSize: 13, lineHeight: 2,
-                padding: 14, resize: "none", outline: "none",
-                letterSpacing: "0.1em",
-              }}
+              className="w-full box-border bg-[#060810] border border-[#1f2937] rounded text-[#10b981] font-mono text-xs sm:text-[13px] leading-[2] p-3 sm:p-3.5 resize-none outline-none tracking-[0.1em] focus:border-[#10b98155] transition-colors"
             />
-            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            
+            <div className="flex gap-2 sm:gap-2 mt-3">
               <button
                 onClick={handleStart}
                 disabled={isChecking || !input.trim()}
-                style={{
-                  flex: 1, padding: "11px 0",
-                  background: isChecking ? "#9a3412" : "#ff6b2b",
-                  color: "#fff", border: "none", borderRadius: 4,
-                  cursor: isChecking || !input.trim() ? "not-allowed" : "pointer",
-                  fontFamily: "monospace", fontSize: 11, fontWeight: 700,
-                  letterSpacing: "0.15em",
-                  opacity: !input.trim() && !isChecking ? 0.4 : 1,
-                  boxShadow: isChecking ? "none" : "0 0 20px #ff6b2b40",
-                  transition: "all 0.2s",
-                }}
+                className={`flex-1 py-2.5 sm:py-3 border-none rounded-[4px] font-mono text-[10px] sm:text-[11px] font-bold tracking-[0.15em] transition-all duration-200
+                  ${isChecking ? 'bg-[#9a3412] text-white cursor-not-allowed' : 'bg-[#ff6b2b] text-white cursor-pointer shadow-[0_0_20px_#ff6b2b40]'}
+                  ${!input.trim() && !isChecking ? 'opacity-40 shadow-none' : ''}
+                `}
               >
                 {isChecking ? `⟳ ${progress.current}/${progress.total} SCANNING` : "◈ RUN API LOOKUP"}
               </button>
               {isChecking && (
                 <button
                   onClick={() => { abortRef.current = true; }}
-                  style={{
-                    padding: "11px 16px",
-                    background: "transparent", color: "#ef4444",
-                    border: "1px solid #ef444455", borderRadius: 4,
-                    cursor: "pointer", fontFamily: "monospace",
-                    fontSize: 11, letterSpacing: "0.1em",
-                  }}
+                  className="py-2.5 sm:py-3 px-3 sm:px-4 bg-transparent text-[#ef4444] border border-[#ef444455] rounded-[4px] cursor-pointer font-mono text-[10px] sm:text-[11px] tracking-[0.1em] hover:bg-[#ef444411]"
                 >
                   ■ STOP
                 </button>
               )}
             </div>
+
             {isChecking && (
-              <div style={{ marginTop: 12 }}>
-                <div style={{ height: 2, background: "#1f2937", borderRadius: 1, overflow: "hidden" }}>
-                  <div style={{
-                    height: "100%", width: `${pct}%`,
-                    background: "linear-gradient(90deg, #ff6b2b, #fb923c)",
-                    transition: "width 0.3s",
-                    boxShadow: "0 0 8px #fb923c80",
-                  }} />
+              <div className="mt-3">
+                <div className="h-0.5 sm:h-1 bg-[#1f2937] rounded overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#ff6b2b] to-[#fb923c] transition-[width] duration-300 shadow-[0_0_8px_#fb923c80]"
+                    style={{ width: `${pct}%` }} />
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-                  <span style={{ fontFamily: "monospace", fontSize: 10, color: "#374151" }}>
+                <div className="flex justify-between mt-1.5 sm:mt-2">
+                  <span className="font-mono text-[9px] sm:text-[10px] text-[#374151]">
                     {progress.current} of {progress.total} processed
                   </span>
-                  <span style={{ fontFamily: "monospace", fontSize: 10, color: "#fb923c" }}>{pct}%</span>
+                  <span className="font-mono text-[9px] sm:text-[10px] text-[#fb923c]">{pct}%</span>
                 </div>
               </div>
             )}
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="grid grid-cols-3 lg:flex lg:flex-col gap-2 sm:gap-2.5">
             {[
               { label: "TOTAL", value: results.length, color: "#94a3b8", border: "#1f2937", bg: "#0d1117" },
               { label: "FOUND", value: found, color: "#10b981", border: "#10b98133", bg: "#10b98108" },
               { label: "MISS", value: notFound, color: "#ef4444", border: "#ef444433", bg: "#ef444408" },
             ].map(s => (
-              <div key={s.label} style={{
-                flex: 1, background: s.bg,
-                border: `1px solid ${s.border}`,
-                borderRadius: 8, padding: "16px 18px",
-                display: "flex", flexDirection: "column",
-              }}>
-                <span style={{ fontSize: 9, letterSpacing: "0.2em", color: "#374151", marginBottom: 8 }}>
-                  {s.label}
-                </span>
-                <span style={{
-                  fontSize: 40, fontWeight: 900, lineHeight: 1,
-                  color: s.color,
-                  fontVariantNumeric: "tabular-nums",
-                  textShadow: s.value > 0 ? `0 0 20px ${s.color}55` : "none",
-                }}>
+              <div key={s.label} className="flex-1 rounded-lg p-3 sm:p-4 flex flex-col justify-center lg:justify-start"
+                style={{ background: s.bg, border: `1px solid ${s.border}` }}
+              >
+                <span className="text-[8px] sm:text-[9px] tracking-[0.2em] text-[#374151] mb-1 sm:mb-2">{s.label}</span>
+                <span className="text-2xl sm:text-4xl font-black leading-none tabular-nums"
+                  style={{ color: s.color, textShadow: s.value > 0 ? `0 0 20px ${s.color}55` : "none" }}>
                   {String(s.value).padStart(2, "0")}
                 </span>
               </div>
@@ -548,51 +453,38 @@ export default function BinChecker() {
           </div>
         </div>
 
+        {/* ─── Results ─── */}
         {results.length > 0 && (
-          <div style={{
-            background: "#0d1117", border: "1px solid #1f2937",
-            borderRadius: 8, padding: 24, marginBottom: 24,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <span style={{ fontSize: 10, letterSpacing: "0.2em", color: "#4b5563" }}>
+          <div className="bg-[#0d1117] border border-[#1f2937] rounded-lg p-4 sm:p-6 mb-6">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+              <span className="text-[9px] sm:text-[10px] tracking-[0.2em] text-[#4b5563]">
                 RESULTS · {results.length} ENTRIES
               </span>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={handleCopy} style={{
-                  padding: "5px 14px",
-                  background: copied ? "#10b98122" : "transparent",
-                  color: copied ? "#10b981" : "#4b5563",
-                  border: `1px solid ${copied ? "#10b98155" : "#1f2937"}`,
-                  borderRadius: 3, cursor: "pointer",
-                  fontFamily: "monospace", fontSize: 10, letterSpacing: "0.12em",
-                  transition: "all 0.2s",
-                }}>
+              <div className="flex gap-2">
+                <button onClick={handleCopy} className={`
+                  px-3 py-1.5 rounded-[3px] cursor-pointer font-mono text-[9px] sm:text-[10px] tracking-[0.12em] transition-all duration-200
+                  ${copied ? 'bg-[#10b98122] text-[#10b981] border border-[#10b98155]' : 'bg-transparent text-[#4b5563] border border-[#1f2937]'}
+                  hover:border-[#4b5563]
+                `}>
                   {copied ? "✓ COPIED" : "⎘ COPY"}
                 </button>
-                <button onClick={handleExport} style={{
-                  padding: "5px 14px",
-                  background: "transparent", color: "#4b5563",
-                  border: "1px solid #1f2937",
-                  borderRadius: 3, cursor: "pointer",
-                  fontFamily: "monospace", fontSize: 10, letterSpacing: "0.12em",
-                }}>
+                <button onClick={handleExport} className="px-3 py-1.5 bg-transparent text-[#4b5563] border border-[#1f2937] rounded-[3px] cursor-pointer font-mono text-[9px] sm:text-[10px] tracking-[0.12em] hover:text-[#94a3b8] hover:border-[#4b5563] transition-colors">
                   ↓ CSV
                 </button>
               </div>
             </div>
 
-            <div style={{
-              display: "flex", gap: 12, padding: "4px 16px",
-              marginBottom: 6,
-            }}>
-              {["#", "STATUS", "BIN", "BRAND", "FUNDING", "CC", "MS"].map(h => (
-                <span key={h} style={{ fontSize: 9, letterSpacing: "0.15em", color: "#1f2937", flex: h === "BIN" ? 1 : "none", minWidth: h === "#" ? 24 : "auto" }}>
-                  {h}
-                </span>
-              ))}
+            <div className="flex gap-2 sm:gap-3 px-3 sm:px-4 py-1 mb-1.5">
+              <span className="text-[8px] sm:text-[9px] tracking-[0.15em] text-[#374151] min-w-[20px] sm:min-w-[24px]">#</span>
+              <span className="text-[8px] sm:text-[9px] tracking-[0.15em] text-[#374151] w-[40px] sm:w-[50px]">STATUS</span>
+              <span className="text-[8px] sm:text-[9px] tracking-[0.15em] text-[#374151] flex-1">BIN</span>
+              <div className="hidden sm:flex gap-2 flex-shrink items-center text-transparent">
+                 {/* Empty placeholders to visually align headers closely to Brand & Funding layout logic */}
+              </div>
+              <span className="text-[8px] sm:text-[9px] tracking-[0.15em] text-[#374151] ml-auto">TIME</span>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 520, overflowY: "auto" }}>
+            <div className="flex flex-col gap-1 sm:gap-1.5 max-h-[520px] overflow-y-auto pr-1">
               {results.map((r, i) => (
                 <ResultRow
                   key={i}
@@ -606,46 +498,33 @@ export default function BinChecker() {
           </div>
         )}
 
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#374151", marginBottom: 16 }}>
+        {/* ─── FAQ / Reference ─── */}
+        <div className="mb-4">
+          <div className="text-[8px] sm:text-[9px] tracking-[0.2em] text-[#374151] mb-3 sm:mb-4">
             FAQ · REFERENCE
           </div>
           {FAQ.map((item, i) => (
-            <div key={i} style={{
-              border: "1px solid #1f2937",
-              borderRadius: 4,
-              overflow: "hidden",
-              marginBottom: 4,
-              background: faqOpen === i ? "#0d1117" : "transparent",
-            }}>
+            <div key={i} className={`border border-[#1f2937] rounded-[4px] overflow-hidden mb-1 ${faqOpen === i ? 'bg-[#0d1117]' : 'bg-transparent'}`}>
               <button
                 onClick={() => setFaqOpen(faqOpen === i ? null : i)}
-                style={{
-                  width: "100%", display: "flex", justifyContent: "space-between",
-                  alignItems: "center", padding: "12px 16px",
-                  background: "none", border: "none", cursor: "pointer", textAlign: "left",
-                }}
+                className="w-full flex justify-between items-center p-3 sm:p-3 px-4 sm:px-4 bg-none border-none cursor-pointer text-left hover:bg-[#1f293711] transition-colors"
               >
-                <span style={{ fontFamily: "monospace", fontSize: 12, color: "#64748b", letterSpacing: "0.03em" }}>
+                <span className="font-mono text-[11px] sm:text-xs text-[#64748b] tracking-[0.03em] pr-2">
                   {String(i + 1).padStart(2, "0")} · {item.q}
                 </span>
-                <span style={{ color: "#374151", fontSize: 12, flexShrink: 0 }}>
+                <span className="text-[#374151] text-xs shrink-0 font-mono font-bold">
                   {faqOpen === i ? "−" : "+"}
                 </span>
               </button>
               {faqOpen === i && (
-                <div style={{
-                  padding: "0 16px 14px",
-                  fontFamily: "monospace", fontSize: 11.5, lineHeight: 1.8,
-                  color: "#4b5563", borderTop: "1px solid #1f2937",
-                  paddingTop: 12,
-                }}>
+                <div className="px-4 pb-3.5 pt-3 font-mono text-[10px] sm:text-[11.5px] leading-[1.8] text-[#4b5563] border-t border-[#1f2937]">
                   {item.a}
                 </div>
               )}
             </div>
           ))}
         </div>
+
       </div>
     </div>
   );
