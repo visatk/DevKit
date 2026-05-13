@@ -4,7 +4,7 @@ import { SeoHead } from '@/components/SeoHead';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { 
   Copy, Check, MapPin, UserSquare2, Globe, Loader2, ArrowLeft,
-  Briefcase, WalletCards, Database, FileCode2, Shield, ChevronRight, 
+  Briefcase, WalletCards, ChevronRight, 
   RefreshCw, MousePointerClick, Cpu, Plane
 } from 'lucide-react';
 // v10 ESM Imports
